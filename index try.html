@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolve Fitness — Kiosk</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#d4a853;--gold2:#f5c842;--gold-dim:rgba(212,168,83,0.15);
+  --bg:#04040a;
+}
+*{font-family:'Rajdhani',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+.font-oswald{font-family:'Oswald',sans-serif;}
+html,body{background:var(--bg);color:#fff;overflow-x:hidden;min-height:100vh;}
+
+/* ── AMBIENT BACKGROUND ── */
+#ambient-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+#ambient-bg::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 80% 60% at 10% 90%,rgba(212,168,83,0.12) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 50% at 90% 10%,rgba(212,168,83,0.08) 0%,transparent 50%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,rgba(8,8,14,0.88) 0%,var(--bg) 100%);}
+.grid-lines{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(212,168,83,0.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(212,168,83,0.04) 1px,transparent 1px);
+  background-size:72px 72px;animation:gridDrift 50s linear infinite;}
+@keyframes gridDrift{0%{transform:translate(0,0)}100%{transform:translate(72px,72px)}}
+
+/* ── PARTICLES ── */
+#particles-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.8;}
+
+/* ── BASE ── */
+.gold-text{color:var(--gold);}
+.dark-card{background:rgba(8,8,14,0.99);border:1px solid rgba(212,168,83,0.18);backdrop-filter:blur(24px);box-shadow:0 12px 50px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.04);}
+.fade-in{animation:fadeIn 0.6s cubic-bezier(0.16,1,0.3,1) both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── NAV ── */
+nav.kiosk-nav{background:rgba(4,4,10,0.97);backdrop-filter:blur(30px);border-bottom:1px solid rgba(212,168,83,0.14);position:fixed;top:0;width:100%;z-index:40;box-shadow:0 2px 40px rgba(0,0,0,0.7);}
+.nav-btn{transition:all 0.22s;border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.5);}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,168,83,0.09);}
+.nav-btn.active{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000;border-color:transparent;font-weight:700;box-shadow:0 4px 20px rgba(212,168,83,0.45);}
+
+/* ── CLOCK — HUGE ── */
+.kiosk-clock{font-family:'Oswald',sans-serif;font-size:clamp(2.8rem,5.5vw,5.5rem);font-weight:200;letter-spacing:0.03em;line-height:1;color:#fff;text-shadow:0 0 80px rgba(212,168,83,0.4),0 2px 20px rgba(0,0,0,0.5);}
+.kiosk-date{font-size:clamp(0.7rem,1vw,0.95rem);letter-spacing:0.42em;color:rgba(212,168,83,0.75);text-transform:uppercase;margin-top:6px;font-weight:700;}
+
+/* ── STAT BUBBLES — LARGE ── */
+.stat-bubble{background:rgba(8,8,14,0.96);border:1px solid rgba(212,168,83,0.18);border-radius:22px;padding:14px 22px;text-align:center;transition:all 0.35s;position:relative;overflow:hidden;}
+.stat-bubble::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(212,168,83,0.08),transparent 55%);pointer-events:none;}
+.stat-bubble::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,83,0.5),transparent);}
+.stat-bubble:hover{border-color:rgba(212,168,83,0.5);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,0.5),0 0 30px rgba(212,168,83,0.12);}
+.stat-num{font-family:'Oswald',sans-serif;line-height:1;transition:all 0.4s;}
+
+/* ── RFID RINGS — FULL SIZE ── */
+.rfid-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;}
+.rfid-outer{width:110px;height:110px;border-radius:50%;border:2.5px solid rgba(212,168,83,0.28);display:flex;align-items:center;justify-content:center;position:relative;animation:breathe 3s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);border-color:rgba(212,168,83,0.25);}50%{transform:scale(1.07);border-color:rgba(212,168,83,0.7);box-shadow:0 0 50px rgba(212,168,83,0.15);}}
+.rfid-ring-1,.rfid-ring-2,.rfid-ring-3{position:absolute;border-radius:50%;border:1.5px solid rgba(212,168,83,0.4);animation:ripple 2.8s ease-out infinite;}
+.rfid-ring-1{width:110px;height:110px;animation-delay:0s;}
+.rfid-ring-2{width:110px;height:110px;animation-delay:0.9s;}
+.rfid-ring-3{width:110px;height:110px;animation-delay:1.8s;}
+@keyframes ripple{0%{transform:scale(1);opacity:0.6;}100%{transform:scale(2.8);opacity:0;}}
+.rfid-inner{width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,rgba(212,168,83,0.12),rgba(212,168,83,0.04));border:2px solid rgba(212,168,83,0.38);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(212,168,83,0.12),inset 0 0 30px rgba(212,168,83,0.06);}
+
+/* ── CHECKIN CARD ── */
+.checkin-card{transition:all 0.35s cubic-bezier(0.16,1,0.3,1);border:1px solid rgba(212,168,83,0.2);cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+.checkin-card::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(212,168,83,0.09) 0%,transparent 55%);opacity:0;transition:opacity 0.3s;pointer-events:none;}
+.checkin-card:hover::before{opacity:1;}
+.checkin-card:hover{border-color:rgba(212,168,83,0.65);box-shadow:0 0 80px rgba(212,168,83,0.22),0 16px 50px rgba(0,0,0,0.5);}
+.checkin-card:active{transform:scale(0.99);}
+
+/* ── SCAN LINE ── */
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:scanMove 2.5s ease-in-out infinite;opacity:0.55;}
+@keyframes scanMove{0%{top:0;opacity:0;}8%{opacity:0.9;}92%{opacity:0.9;}100%{top:100%;opacity:0;}}
+
+/* ── CORNER BRACKETS ── */
+.corner-tl{position:absolute;top:18px;left:18px;width:30px;height:30px;border-top:2.5px solid rgba(212,168,83,0.6);border-left:2.5px solid rgba(212,168,83,0.6);}
+.corner-tr{position:absolute;top:18px;right:18px;width:30px;height:30px;border-top:2.5px solid rgba(212,168,83,0.6);border-right:2.5px solid rgba(212,168,83,0.6);}
+.corner-bl{position:absolute;bottom:18px;left:18px;width:30px;height:30px;border-bottom:2.5px solid rgba(212,168,83,0.6);border-left:2.5px solid rgba(212,168,83,0.6);}
+.corner-br{position:absolute;bottom:18px;right:18px;width:30px;height:30px;border-bottom:2.5px solid rgba(212,168,83,0.6);border-right:2.5px solid rgba(212,168,83,0.6);}
+
+/* ── LOGO ── */
+.logo-container{position:relative;display:inline-flex;align-items:center;justify-content:center;}
+.logo-halo{position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,0.22) 0%,transparent 65%);animation:haloBreath 3.5s ease-in-out infinite;}
+@keyframes haloBreath{0%,100%{transform:scale(0.87);opacity:0.5;}50%{transform:scale(1.13);opacity:1;}}
+.logo-hex{width:96px;height:96px;background:linear-gradient(145deg,#1e1e28,#080810);border:2.5px solid rgba(212,168,83,0.45);border-radius:22px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 70px rgba(212,168,83,0.28),0 20px 60px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.07);animation:logoFloat 4s ease-in-out infinite;}
+@keyframes logoFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+.logo-hex::before{content:'';position:absolute;inset:1px;border-radius:26px;background:linear-gradient(145deg,rgba(212,168,83,0.09),transparent);}
+
+/* ── TITLE ── */
+.title-welcome{font-size:clamp(0.7rem,1vw,0.9rem);letter-spacing:0.55em;color:rgba(255,255,255,0.3);text-transform:uppercase;font-weight:700;animation:titleSlideIn 0.9s 0.3s cubic-bezier(0.16,1,0.3,1) both;}
+.title-main{font-family:'Oswald',sans-serif;font-size:clamp(2rem,3.5vw,4rem);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;line-height:1;animation:titleSlideIn 0.9s 0.5s cubic-bezier(0.16,1,0.3,1) both;background:linear-gradient(140deg,var(--gold2) 0%,var(--gold) 45%,#c49030 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+@keyframes titleSlideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── INPUT — LARGE ── */
+.input-dark{background:rgba(12,12,20,0.95);border:1.5px solid rgba(212,168,83,0.25);color:white;transition:all 0.3s;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:1.1rem;}
+.input-dark:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,168,83,0.12),0 0 30px rgba(212,168,83,0.18);}
+.input-dark::placeholder{color:rgba(255,255,255,0.22);}
+.input-dark.valid{border-color:rgba(34,197,94,0.6);}
+.input-dark.invalid{border-color:rgba(239,68,68,0.6);}
+
+/* ── BUTTON — LARGE ── */
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000;font-weight:800;transition:all 0.3s;position:relative;overflow:hidden;font-family:'Oswald',sans-serif;letter-spacing:0.12em;}
+.btn-gold::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.3),transparent 60%);opacity:0;transition:opacity 0.3s;}
+.btn-gold:hover::before{opacity:1;}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 14px 45px rgba(212,168,83,0.65);}
+.btn-gold:active{transform:scale(0.98);}
+.btn-gold:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ── TICKER ── */
+.ticker-wrap{overflow:hidden;background:rgba(212,168,83,0.04);border-top:1px solid rgba(212,168,83,0.12);border-bottom:1px solid rgba(212,168,83,0.06);}
+.ticker-track{display:flex;animation:ticker 32s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:8px 28px;white-space:nowrap;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.05);}
+
+/* ── MODAL ── */
+.modal-enter{animation:modalPop 0.38s cubic-bezier(0.16,1,0.3,1);}
+@keyframes modalPop{from{opacity:0;transform:scale(0.91) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-member-photo{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 18px;display:block;box-shadow:0 0 30px rgba(212,168,83,0.3);}
+
+/* ── NOTIF ── */
+.notif{animation:slideR 0.35s cubic-bezier(0.16,1,0.3,1);}
+@keyframes slideR{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ── MISC ── */
+.gold-glow{filter:drop-shadow(0 0 22px rgba(212,168,83,0.6));}
+.logo-glow{filter:drop-shadow(0 0 28px rgba(212,168,83,0.65));}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#04040a;}
+::-webkit-scrollbar-thumb{background:rgba(212,168,83,0.5);border-radius:4px;}
+.plan-card{transition:all 0.3s cubic-bezier(0.16,1,0.3,1);cursor:pointer;}
+.plan-card:hover{transform:translateY(-4px);}
+.plan-card.selected{border-color:var(--gold)!important;background:rgba(212,168,83,0.1)!important;box-shadow:0 0 40px rgba(212,168,83,0.18);}
+.tag-icon{animation:tagPulse 1.8s ease-in-out infinite;}
+@keyframes tagPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.45;transform:scale(0.85);}}
+.step-dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;transition:all 0.35s;flex-shrink:0;}
+.step-dot.active{background:var(--gold);color:#000;box-shadow:0 0 20px rgba(212,168,83,0.55);}
+.step-dot.done{background:#16a34a;color:#fff;}
+.step-dot.pending{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.1);}
+.step-line{flex:1;height:2px;background:rgba(255,255,255,0.07);transition:background 0.4s;}
+.step-line.done{background:var(--gold);}
+#video-feed{transform:scaleX(-1);object-fit:cover;border-radius:14px;}
+#capture-canvas{display:none;}
+.shutter-btn{width:78px;height:78px;border-radius:50%;border:3px solid var(--gold);background:transparent;position:relative;transition:all 0.2s;cursor:pointer;}
+.shutter-btn::after{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--gold);transition:all 0.2s;}
+.shutter-btn:hover::after{background:#fff;}
+.shutter-btn:active{transform:scale(0.91);}
+.photo-preview-wrapper{position:relative;width:120px;height:120px;margin:0 auto;}
+.photo-preview-wrapper img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:2.5px solid var(--gold);}
+.photo-remove-btn{position:absolute;top:-5px;right:-5px;width:28px;height:28px;border-radius:50%;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:2px solid #04040a;transition:background 0.2s;}
+.photo-remove-btn:hover{background:#ff4444;color:#fff;}
+.flash-overlay{position:fixed;inset:0;background:white;opacity:0;pointer-events:none;z-index:9999;animation:flashA 0.4s ease-out forwards;}
+@keyframes flashA{0%{opacity:0.9}100%{opacity:0}}
+.row-hover:hover{background:rgba(212,168,83,0.04);}
+.success-pop{animation:sPop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
+@keyframes sPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.field-err{color:#f87171;font-size:12px;margin-top:4px;}
+.tab-pill{padding:8px 20px;border-radius:24px;font-size:13px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);transition:all 0.25s;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.06em;}
+.tab-pill:hover{border-color:var(--gold);color:var(--gold);}
+.tab-pill.active{background:var(--gold);color:#000;border-color:var(--gold);}
+.att-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+
+/* ── CHECK-IN SUCCESS BURST ── */
+@keyframes checkInBurst{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.9);}100%{box-shadow:0 0 0 90px rgba(34,197,94,0);}}
+.checkin-burst{animation:checkInBurst 0.75s ease-out;}
+
+/* ── SCANNER STATUS ── */
+.scanner-status{display:flex;align-items:center;gap:6px;margin-left:16px;padding:4px 10px;border-radius:30px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);}
+.status-dot{width:10px;height:10px;border-radius:50%;transition:background 0.3s, box-shadow 0.3s;}
+.status-dot.online{background:#10b981;box-shadow:0 0 15px #10b981;}
+.status-dot.offline{background:#6b7280;box-shadow:none;}
+.status-text{font-size:11px;font-weight:600;letter-spacing:0.05em;color:rgba(255,255,255,0.5);text-transform:uppercase;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="min-h-screen">
+
+<!-- Ambient background -->
+<div id="ambient-bg"><div class="grid-lines"></div></div>
+<canvas id="particles-canvas"></canvas>
+
+<!-- TOP NAV -->
+<nav class="kiosk-nav">
+  <div class="max-w-7xl mx-auto px-6 sm:px-10">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <div class="w-11 h-11 bg-gradient-to-br from-gray-800 to-black border border-yellow-600/40 rounded-xl flex items-center justify-center" style="box-shadow:0 0 18px rgba(212,168,83,0.25)">
+          <span class="font-oswald font-bold text-xl leading-none"><span class="text-white">E</span><span class="gold-text">F</span></span>
+        </div>
+        <div>
+          <h1 class="font-oswald text-base tracking-[0.28em] text-white leading-none uppercase">Evolve Fitness</h1>
+          <p class="text-[10px] text-yellow-600/50 tracking-[0.3em] uppercase mt-0.5 font-semibold">Gym & Fitness Center</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Scanner status indicator (NEW) -->
+        <div class="scanner-status" id="scanner-status">
+          <span class="status-dot offline" id="scanner-dot"></span>
+          <span class="status-text" id="scanner-text">Scanner Offline</span>
+        </div>
+        <button onclick="showSection('home')" id="nav-home" class="nav-btn active px-4 py-2 rounded-xl text-sm flex items-center gap-2 font-semibold tracking-wide"><i class="fas fa-home"></i><span class="hidden sm:inline">Home</span></button>
+        <button onclick="showQRModal()" id="nav-register" class="nav-btn px-4 py-2 rounded-xl text-sm flex items-center gap-2 font-semibold tracking-wide"><i class="fas fa-qrcode"></i><span class="hidden sm:inline">Register</span></button>
+        <a href="admin.html" class="nav-btn px-4 py-2 rounded-xl text-sm flex items-center gap-2 border-yellow-600/30 text-yellow-600/60 hover:text-yellow-500 font-semibold tracking-wide"><i class="fas fa-shield-halved"></i><span class="hidden sm:inline">Admin</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- KIOSK MAIN CONTENT -->
+<main id="kiosk-main" class="flex-1 pt-16 flex flex-col items-center justify-start" style="height:100vh;overflow:hidden;">
+
+  <!-- HOME -->
+  <section id="home-section" class="w-full flex flex-col fade-in" style="position:relative;z-index:1;height:calc(100vh - 64px);overflow:hidden;">
+
+    <!-- ── TOP BAR: Clock + Stats ── -->
+    <div class="w-full flex items-center justify-between px-8 sm:px-14 py-3 border-b border-white/5 flex-shrink-0" style="background:rgba(4,4,10,0.5);">
+      <!-- BIG Clock -->
+      <div>
+        <p class="kiosk-clock" id="kiosk-clock-time">00:00</p>
+        <p class="kiosk-date" id="kiosk-clock-date">Loading...</p>
+      </div>
+      <!-- Stats (desktop) -->
+      <div class="hidden md:flex items-center gap-5">
+        <div class="stat-bubble">
+          <p class="stat-num text-5xl font-bold text-white font-oswald" id="quick-total">0</p>
+          <p class="text-xs text-gray-500 uppercase tracking-widest mt-2 font-bold">Members</p>
+        </div>
+        <div class="stat-bubble">
+          <p class="stat-num text-5xl font-bold text-green-400 font-oswald" id="quick-today">0</p>
+          <p class="text-xs text-gray-500 uppercase tracking-widest mt-2 font-bold">Checked In</p>
+        </div>
+        <div class="stat-bubble">
+          <p class="stat-num text-5xl font-bold text-blue-400 font-oswald" id="quick-walkin">0</p>
+          <p class="text-xs text-gray-500 uppercase tracking-widest mt-2 font-bold">Walk-ins</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN AREA ── -->
+    <div class="flex-1 flex items-center justify-center px-6 py-3 gap-8 xl:gap-12 min-h-0" style="position:relative;z-index:1;overflow:hidden;">
+
+      <!-- LEFT COLUMN: Logo + Check-in + Register -->
+      <div class="flex flex-col items-center gap-3 w-full max-w-lg flex-shrink-0" style="animation:titleSlideIn 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both;">
+
+        <!-- Logo + Branding -->
+        <div class="text-center">
+          <div class="logo-container mx-auto mb-2">
+            <div class="logo-halo"></div>
+            <div class="logo-hex">
+              <span class="font-oswald text-4xl font-bold leading-none logo-glow">
+                <span class="text-white">E</span><span class="gold-text">F</span>
+              </span>
+            </div>
+          </div>
+          <p class="title-welcome">Welcome to</p>
+          <h1 class="title-main">Evolve Fitness</h1>
+          <p class="text-xs text-gray-600 tracking-[0.3em] uppercase font-bold mt-1">Your Fitness Journey Starts Here</p>
+        </div>
+
+        <!-- ── RFID CHECK-IN CARD ── -->
+        <div class="w-full checkin-card rounded-3xl bg-[rgba(8,8,14,0.99)] px-6 py-5 relative overflow-hidden" onclick="focusRFID()">
+          <div class="scan-line"></div>
+          <div class="corner-tl"></div><div class="corner-tr"></div>
+          <div class="corner-bl"></div><div class="corner-br"></div>
+
+          <div class="flex flex-col items-center gap-4">
+            <!-- Full-size RFID rings — NO scale hack -->
+            <div class="rfid-ring-wrap" style="padding:10px 0;">
+              <div class="rfid-ring-1"></div>
+              <div class="rfid-ring-2"></div>
+              <div class="rfid-ring-3"></div>
+              <div class="rfid-outer">
+                <div class="rfid-inner">
+                  <i class="fas fa-wifi gold-text text-3xl tag-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <h3 class="font-oswald text-2xl tracking-[0.2em] text-yellow-500 uppercase">Tap Your Tag</h3>
+              <p class="text-sm text-gray-500 tracking-widest uppercase mt-1 font-semibold">Place RFID tag on the reader</p>
+            </div>
+
+            <div class="w-full space-y-2">
+              <input type="text" id="rfid-input"
+                class="input-dark w-full rounded-2xl px-5 py-3 text-center font-mono tracking-widest text-lg"
+                placeholder="Or type RFID here..."
+                onkeydown="if(event.key==='Enter')processRFID()"
+                autocomplete="off">
+              <button onclick="processRFID()"
+                class="w-full btn-gold py-3 rounded-2xl text-lg uppercase tracking-widest">
+                <i class="fas fa-sign-in-alt mr-3"></i>Check In
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Register strip -->
+        <div class="w-full checkin-card rounded-2xl bg-[rgba(8,8,14,0.99)] px-5 py-3 flex items-center gap-4 cursor-pointer" onclick="showQRModal()">
+          <div class="w-10 h-10 rounded-xl bg-yellow-600/10 border border-yellow-600/25 flex items-center justify-center flex-shrink-0" style="box-shadow:0 0 20px rgba(212,168,83,0.08)">
+            <i class="fas fa-qrcode text-yellow-500 text-lg"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="font-oswald text-base uppercase tracking-wider text-white leading-none">New Member?</p>
+            <p class="text-xs text-gray-500 font-semibold mt-0.5">Scan QR code to fill out the registration form</p>
+          </div>
+          <i class="fas fa-chevron-right text-gray-500 text-base ml-auto flex-shrink-0"></i>
+        </div>
+
+        <!-- Mobile stats -->
+        <div class="grid grid-cols-3 gap-3 w-full md:hidden">
+          <div class="stat-bubble py-4"><p class="stat-num text-3xl font-bold text-white font-oswald" id="quick-total-m">0</p><p class="text-[10px] text-gray-500 uppercase tracking-wider mt-1.5 font-bold">Members</p></div>
+          <div class="stat-bubble py-4"><p class="stat-num text-3xl font-bold text-green-400 font-oswald" id="quick-today-m">0</p><p class="text-[10px] text-gray-500 uppercase tracking-wider mt-1.5 font-bold">Checked In</p></div>
+          <div class="stat-bubble py-4"><p class="stat-num text-3xl font-bold text-blue-400 font-oswald" id="quick-walkin-m">0</p><p class="text-[10px] text-gray-500 uppercase tracking-wider mt-1.5 font-bold">Walk-ins</p></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Today's Check-ins panel -->
+      <div class="hidden lg:flex flex-col flex-shrink-0" style="width:300px;animation:titleSlideIn 0.9s 0.3s cubic-bezier(0.16,1,0.3,1) both;height:100%;max-height:100%;">
+        <div class="dark-card rounded-3xl overflow-hidden flex flex-col h-full">
+          <div class="flex items-center justify-between px-6 py-5 border-b border-white/6 flex-shrink-0" style="background:rgba(212,168,83,0.03);">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse"></span>
+              <h3 class="font-oswald text-base uppercase tracking-[0.22em] text-white">Today's Check-ins</h3>
+            </div>
+            <span class="text-xs text-gray-500 font-bold bg-white/5 px-3 py-1.5 rounded-full" id="checkin-list-count"></span>
+          </div>
+          <div id="checkin-list" class="overflow-y-auto flex-1" style="scrollbar-width:thin;">
+            <div id="checkin-list-empty" class="flex flex-col items-center justify-center h-full py-16 text-gray-600">
+              <i class="fas fa-clock text-5xl mb-4 opacity-10"></i>
+              <p class="text-sm uppercase tracking-widest font-bold">No check-ins yet</p>
+              <p class="text-xs text-gray-700 mt-2">Check-ins will appear here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MEMBERS -->
+  <section id="members-section" class="hidden w-full max-w-5xl mx-auto px-4 pt-10 pb-10 fade-in">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div><h2 class="font-oswald text-3xl gold-text uppercase tracking-wider">Members</h2><p class="text-gray-400 text-sm mt-0.5" id="members-count"></p></div>
+      <div class="flex gap-3 flex-wrap">
+        <div class="relative"><i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i><input type="text" id="member-search" class="input-dark rounded-lg pl-8 pr-4 py-2.5 text-sm w-48" placeholder="Search..." oninput="filterMembers()"></div>
+        <button onclick="showSection('register')" class="btn-gold px-4 py-2.5 rounded-lg text-sm font-oswald uppercase tracking-wide"><i class="fas fa-plus mr-2"></i>New</button>
+      </div>
+    </div>
+    <div class="flex gap-2 mb-5 flex-wrap">
+      <button onclick="setMF('all')" id="filter-all" class="tab-pill active">All</button>
+      <button onclick="setMF('monthly')" id="filter-monthly" class="tab-pill">Monthly</button>
+      <button onclick="setMF('entry')" id="filter-entry" class="tab-pill">Walk-in</button>
+      <button onclick="setMF('expired')" id="filter-expired" class="tab-pill">Expired</button>
+    </div>
+    <div class="dark-card rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm"><thead><tr class="border-b border-white/10 text-xs uppercase tracking-wider text-gray-500"><th class="text-left py-4 px-5">Member</th><th class="text-left py-4 px-4 hidden sm:table-cell">RFID</th><th class="text-left py-4 px-4 hidden md:table-cell">Contact</th><th class="text-left py-4 px-4">Plan</th><th class="text-left py-4 px-4 hidden lg:table-cell">Expiry</th><th class="text-left py-4 px-4">Status</th><th class="py-4 px-4"></th></tr></thead>
+        <tbody id="members-tbody"></tbody></table>
+      </div>
+      <div id="members-empty" class="hidden text-center py-16 text-gray-600"><i class="fas fa-users text-4xl mb-3 block opacity-20"></i><p class="text-sm">No members found</p><button onclick="showSection('register')" class="mt-3 text-yellow-600 text-xs hover:underline">Register first member →</button></div>
+    </div>
+  </section>
+
+<!-- QR CODE MODAL -->
+<div id="qr-modal" class="hidden fixed inset-0 bg-black/92 backdrop-blur-md z-50 flex items-center justify-center p-4">
+  <div class="dark-card rounded-2xl p-7 max-w-sm w-full modal-enter border border-yellow-600/25 text-center">
+    <button onclick="closeQRModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-gray-400 hover:text-white"><i class="fas fa-times text-sm"></i></button>
+
+    <div class="w-14 h-14 rounded-2xl bg-yellow-600/12 border border-yellow-600/20 flex items-center justify-center mx-auto mb-4" style="box-shadow:0 0 20px rgba(212,168,83,0.1)">
+      <i class="fas fa-qrcode text-yellow-500 text-2xl"></i>
+    </div>
+    <h3 class="font-oswald text-2xl uppercase tracking-wider text-white mb-1">New Member?</h3>
+    <p class="text-gray-400 text-sm mb-5">Scan the QR code with your phone to fill out the registration form.</p>
+
+    <!-- QR code box -->
+    <div class="bg-white rounded-2xl p-4 mx-auto inline-block mb-4" style="line-height:0;">
+      <div id="qr-canvas-wrap"></div>
+    </div>
+
+    <p class="text-xs text-gray-600 mb-4">Or open this link on your phone:</p>
+    <div class="bg-white/4 border border-white/10 rounded-xl px-4 py-2.5 mb-5 flex items-center gap-2 justify-center">
+      <i class="fas fa-link text-yellow-600/60 text-xs flex-shrink-0"></i>
+      <p class="text-xs text-yellow-600/80 font-mono truncate" id="qr-url-label">—</p>
+    </div>
+
+    <div class="bg-white/3 border border-white/6 rounded-xl p-3 text-left flex items-start gap-2.5">
+      <i class="fas fa-circle-info text-gray-500 flex-shrink-0 text-xs mt-0.5"></i>
+      <p class="text-xs text-gray-500">After registering on their phone, staff must assign an RFID tag at the counter for kiosk check-in.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- Check-in Modal -->
+<div id="member-modal" class="hidden fixed inset-0 bg-black/92 backdrop-blur-md z-50 flex items-center justify-center p-4">
+  <div class="dark-card rounded-3xl p-8 max-w-md w-full modal-enter" style="border:1px solid rgba(212,168,83,0.25);box-shadow:0 25px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(212,168,83,0.1);">
+    <div class="text-center mb-6">
+      <div id="modal-photo-wrap" class="hidden mb-4"><img id="modal-photo" src="" alt="" class="modal-member-photo" style="box-shadow:0 0 0 3px rgba(212,168,83,0.3),0 8px 20px rgba(0,0,0,0.5);"></div>
+      <div id="modal-init-wrap" class="w-20 h-20 mx-auto rounded-full bg-gradient-to-b from-gray-700 to-gray-900 border-2 border-yellow-600 flex items-center justify-center mb-4" style="box-shadow:0 0 20px rgba(212,168,83,0.25),0 8px 20px rgba(0,0,0,0.5);"><span class="font-oswald text-3xl gold-text" id="modal-initial">?</span></div>
+      <h3 class="font-oswald text-2xl uppercase tracking-wide" id="modal-name"></h3>
+      <p class="text-gray-500 text-xs mt-1 font-mono tracking-wider" id="modal-rfid-label"></p>
+    </div>
+    <div class="space-y-0 divide-y divide-white/6 mb-6 text-sm bg-white/2 rounded-2xl px-4 overflow-hidden border border-white/5">
+      <div class="flex justify-between py-3"><span class="text-gray-500 font-semibold">Plan</span><span id="modal-plan" class="font-semibold text-white"></span></div>
+      <div class="flex justify-between py-3"><span class="text-gray-500 font-semibold">Status</span><span id="modal-status"></span></div>
+      <div class="flex justify-between py-3" id="modal-expiry-row"><span class="text-gray-500 font-semibold">Expiry</span><span id="modal-expiry" class="font-mono text-xs"></span></div>
+      <div class="flex justify-between py-3" id="modal-days-row"><span class="text-gray-500 font-semibold">Days Left</span><span id="modal-days" class="font-mono"></span></div>
+    </div>
+    <div id="modal-actions" class="space-y-3"></div>
+    <button onclick="closeModal()" class="w-full mt-4 py-3 border border-white/10 rounded-xl text-gray-500 hover:text-white hover:border-white/25 text-sm transition-all font-semibold">Close</button>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="dark-card rounded-2xl p-6 max-w-md w-full modal-enter border border-yellow-600/30 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6"><h3 class="font-oswald text-xl gold-text uppercase tracking-wider">Edit Member</h3><button onclick="closeEditModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button></div>
+    <div class="space-y-4">
+      <div><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Full Name</label><input type="text" id="edit-name" class="input-dark w-full rounded-lg px-4 py-3"></div>
+      <div><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Email</label><input type="email" id="edit-email" class="input-dark w-full rounded-lg px-4 py-3"></div>
+      <div><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Phone</label><input type="tel" id="edit-phone" class="input-dark w-full rounded-lg px-4 py-3"></div>
+      <div><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Plan</label><select id="edit-plan" class="input-dark w-full rounded-lg px-4 py-3" onchange="toggleEditExpiry(this.value)"><option value="entry">Walk-in / Daily</option><option value="monthly">Monthly</option></select></div>
+      <div id="edit-expiry-row" class="hidden"><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Expiry Date</label><input type="date" id="edit-expiry" class="input-dark w-full rounded-lg px-4 py-3"></div>
+      <div><label class="text-xs uppercase tracking-wider text-gray-400 mb-1 block">Status</label><select id="edit-active" class="input-dark w-full rounded-lg px-4 py-3"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+    </div>
+    <div class="flex gap-3 mt-6"><button onclick="closeEditModal()" class="px-5 py-3 border border-white/20 rounded-xl text-gray-400 hover:text-white text-sm transition-all">Cancel</button><button onclick="saveEdit()" class="flex-1 btn-gold py-3 rounded-xl font-oswald uppercase tracking-wider text-sm">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="dark-card rounded-2xl p-8 max-w-sm w-full modal-enter border border-red-500/30 text-center">
+    <i class="fas fa-trash-alt text-red-500 text-4xl mb-4 block"></i>
+    <h3 class="font-oswald text-xl uppercase mb-2">Delete Member?</h3>
+    <p class="text-gray-400 text-sm mb-6" id="delete-msg"></p>
+    <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 border border-white/20 rounded-xl text-gray-400 hover:text-white text-sm transition-all">Cancel</button><button onclick="confirmDelete()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition-all">Delete</button></div>
+  </div>
+</div>
+
+<!-- Camera Modal -->
+<div id="camera-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+  <div class="dark-card rounded-2xl p-6 w-full max-w-md border border-yellow-600/30">
+    <div class="flex items-center justify-between mb-5"><h3 class="font-oswald text-xl gold-text uppercase tracking-wider">Capture Photo</h3><button onclick="closeCamera()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button></div>
+    <div id="cam-live-panel">
+      <div class="relative rounded-xl overflow-hidden bg-black" style="aspect-ratio:4/3;"><video id="video-feed" class="w-full h-full" autoplay playsinline muted></video><div class="absolute inset-0 pointer-events-none flex items-center justify-center"><div class="w-48 h-48 rounded-full border-2 border-dashed border-yellow-600/50"></div></div><div class="absolute bottom-3 left-0 right-0 text-center"><span class="text-xs text-yellow-600/70 uppercase tracking-widest">Center face in circle</span></div></div>
+      <canvas id="capture-canvas"></canvas>
+      <div class="flex items-center justify-between mt-5"><button onclick="switchCamera()" type="button" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-all"><i class="fas fa-sync-alt"></i></button><button onclick="capturePhoto()" type="button" class="shutter-btn"></button><div class="w-12"></div></div>
+    </div>
+    <div id="cam-preview-panel" class="hidden">
+      <div class="relative rounded-xl overflow-hidden bg-black" style="aspect-ratio:4/3;"><img id="cam-preview-img" src="" alt="" class="w-full h-full object-cover rounded-xl"><div class="absolute top-3 left-3 bg-green-600/80 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1"><i class="fas fa-check-circle"></i> Photo captured</div></div>
+      <div class="flex gap-3 mt-5"><button onclick="retakePhoto()" type="button" class="flex-1 py-3 border border-white/20 rounded-xl text-gray-400 hover:text-white flex items-center justify-center gap-2 text-sm transition-all"><i class="fas fa-redo"></i> Retake</button><button onclick="confirmPhoto()" type="button" class="flex-1 py-3 btn-gold rounded-xl flex items-center justify-center gap-2 font-oswald uppercase tracking-wider text-sm"><i class="fas fa-check"></i> Use Photo</button></div>
+    </div>
+    <div id="cam-error-panel" class="hidden text-center py-6"><i class="fas fa-video-slash text-4xl text-red-500 mb-3 block"></i><p class="text-gray-400 mb-1">Camera access denied</p><p class="text-xs text-gray-600">Allow camera permissions and try again.</p><button onclick="closeCamera()" class="mt-4 px-6 py-2 border border-white/20 rounded-lg text-gray-400 hover:text-white text-sm">Close</button></div>
+  </div>
+</div>
+
+<!-- School ID Camera Modal -->
+<div id="school-id-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+  <div class="dark-card rounded-2xl p-6 w-full max-w-md border border-blue-600/30">
+    <div class="flex items-center justify-between mb-5">
+      <div><h3 class="font-oswald text-xl text-blue-400 uppercase tracking-wider">Capture School ID</h3><p class="text-xs text-gray-500 mt-0.5">Place ID flat and fully in frame</p></div>
+      <button onclick="closeSchoolIdCamera()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <div id="sid-live-panel">
+      <div class="relative rounded-xl overflow-hidden bg-black" style="aspect-ratio:16/9;">
+        <video id="sid-video-feed" class="w-full h-full object-cover" autoplay playsinline muted></video>
+        <div class="absolute inset-3 border-2 border-dashed border-blue-500/50 rounded-lg pointer-events-none"></div>
+        <div class="absolute bottom-3 left-0 right-0 text-center"><span class="text-xs text-blue-400/70 uppercase tracking-widest">Align ID within the box</span></div>
+      </div>
+      <canvas id="sid-canvas" class="hidden"></canvas>
+      <div class="flex items-center justify-between mt-5">
+        <button onclick="switchSidCamera()" type="button" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-all"><i class="fas fa-sync-alt"></i></button>
+        <button onclick="captureSchoolId()" type="button" class="shutter-btn"></button>
+        <div class="w-12"></div>
+      </div>
+    </div>
+    <div id="sid-preview-panel" class="hidden">
+      <div class="relative rounded-xl overflow-hidden bg-black" style="aspect-ratio:16/9;"><img id="sid-preview-img" src="" alt="" class="w-full h-full object-cover rounded-xl"><div class="absolute top-3 left-3 bg-green-600/80 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1"><i class="fas fa-check-circle"></i> ID captured</div></div>
+      <div class="flex gap-3 mt-5">
+        <button onclick="retakeSchoolId()" type="button" class="flex-1 py-3 border border-white/20 rounded-xl text-gray-400 flex items-center justify-center gap-2 text-sm"><i class="fas fa-redo"></i> Retake</button>
+        <button onclick="confirmSchoolId()" type="button" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center gap-2 font-oswald uppercase tracking-wider text-sm"><i class="fas fa-check"></i> Use This</button>
+      </div>
+    </div>
+    <div id="sid-error-panel" class="hidden text-center py-6"><i class="fas fa-video-slash text-4xl text-red-500 mb-3 block"></i><p class="text-gray-400 mb-1">Camera access denied</p><p class="text-xs text-gray-600">Allow camera permissions and try again.</p><button onclick="closeSchoolIdCamera()" class="mt-4 px-6 py-2 border border-white/20 rounded-lg text-gray-400 text-sm">Close</button></div>
+  </div>
+</div>
+
+<div id="flash-overlay" class="hidden flash-overlay"></div>
+<div id="notifications" class="fixed top-16 right-4 z-[70] space-y-2"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+//  🔥 FIREBASE CONFIG — REPLACE WITH YOUR OWN! (already filled with yours)
+// ═══════════════════════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBjvcid8BGvrY71z1u3Eva6FI6tqCy7fb0",
+  authDomain: "gym-attendance-e231d.firebaseapp.com",
+  projectId: "gym-attendance-e231d",
+  storageBucket: "gym-attendance-e231d.firebasestorage.app",
+  messagingSenderId: "771252079470",
+  appId: "1:771252079470:web:2750c64eedb45eec718f7f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  👂 LISTEN FOR RFID SCANS FROM ESP8266 (RFID tags written to "rfid_scans")
+// ═══════════════════════════════════════════════════════════════════════════════
+db.collection("rfid_scans")
+.onSnapshot(snapshot => {
+  snapshot.docChanges().forEach(change => {
+    if(change.type === "added"){
+      const uid = change.doc.data().uid
+      console.log("RFID Scan:", uid)
+      const input = document.getElementById("rfid-input")
+      if(input){
+        input.value = uid
+        processRFID()
+      }
+    }
+  })
+})
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  📡 SCANNER HEARTBEAT (listen to scanner/status document)
+// ═══════════════════════════════════════════════════════════════════════════════
+const scannerStatusDot = document.getElementById('scanner-dot');
+const scannerStatusText = document.getElementById('scanner-text');
+
+db.collection("scanner").doc("status").onSnapshot(doc => {
+  if (doc.exists) {
+    const data = doc.data();
+    const lastSeen = data.lastSeen ? data.lastSeen.toDate() : null;
+    const now = new Date();
+    // If lastSeen is within the last 15 seconds, consider online
+    if (lastSeen && (now - lastSeen) < 15000) {
+      scannerStatusDot.className = 'status-dot online';
+      scannerStatusText.textContent = 'Scanner Online';
+    } else {
+      scannerStatusDot.className = 'status-dot offline';
+      scannerStatusText.textContent = 'Scanner Offline';
+    }
+  } else {
+    scannerStatusDot.className = 'status-dot offline';
+    scannerStatusText.textContent = 'Scanner Offline';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  📡 REALTIME TODAY'S CHECK-IN LISTENER
+// ═══════════════════════════════════════════════════════════════════════════════
+(function startRealtimeCheckins() {
+  const today = new Date();
+  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+  const endOfDay   = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
+
+  db.collection('attendance')
+    .where('time', '>=', startOfDay)
+    .where('time', '<',  endOfDay)
+    .orderBy('time', 'desc')
+    .onSnapshot(function(snapshot) {
+      const records = snapshot.docs.map(function(d) { return { ...d.data(), id: d.id }; });
+      const todayCount  = records.length;
+      const walkinCount = records.filter(function(a) { return a.memberPlan === 'entry'; }).length;
+
+      // Update stat counters
+      ['quick-today',  'quick-today-m' ].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) animateCounter(el, todayCount);
+      });
+      ['quick-walkin', 'quick-walkin-m'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) animateCounter(el, walkinCount);
+      });
+
+      // Update the check-in list
+      const list     = document.getElementById('checkin-list');
+      const empty    = document.getElementById('checkin-list-empty');
+      const countEl  = document.getElementById('checkin-list-count');
+      if (!list) return;
+
+      if (!records.length) {
+        if (empty)   empty.style.display = 'flex';
+        if (countEl) countEl.textContent = '';
+        Array.from(list.children).forEach(function(c) { if (c.id !== 'checkin-list-empty') c.remove(); });
+        return;
+      }
+
+      if (empty)   empty.style.display = 'none';
+      if (countEl) countEl.textContent = records.length + ' today';
+
+      // Rebuild list — only re-render if the count changed to avoid flicker
+      const currentRows = list.querySelectorAll('[data-att-id]').length;
+      if (currentRows === records.length) return; // nothing changed
+
+      Array.from(list.children).forEach(function(c) { if (c.id !== 'checkin-list-empty') c.remove(); });
+
+      records.forEach(function(a) {
+        const time = new Date(a.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const isPaid      = a.memberPlan !== 'entry';
+        const badgeColor  = isPaid ? 'text-green-400 bg-green-400/10' : 'text-blue-400 bg-blue-400/10';
+        const badgeLabel  = isPaid ? 'Monthly' : 'Walk-in';
+        const av = a.memberPhoto
+          ? '<img src="' + a.memberPhoto + '" class="w-8 h-8 rounded-full object-cover border border-yellow-600/30 flex-shrink-0" alt="">'
+          : '<div class="w-8 h-8 rounded-full bg-gradient-to-b from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-xs font-bold flex-shrink-0 gold-text">' + (a.memberName || '?').charAt(0).toUpperCase() + '</div>';
+        const row = document.createElement('div');
+        row.setAttribute('data-att-id', a.id);
+        row.className = 'flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-white/3 transition-colors border-b border-white/5 last:border-0';
+        row.innerHTML = av
+          + '<div class="flex-1 min-w-0"><p class="text-xs font-semibold text-white truncate">' + (a.memberName || 'Guest') + '</p>'
+          + '<p class="text-[10px] text-gray-500">' + time + '</p></div>'
+          + '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ' + badgeColor + '">' + badgeLabel + '</span>';
+        list.appendChild(row);
+      });
+    }, function(err) {
+      console.warn('Realtime checkin listener error:', err);
+    });
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  🔧 ESP8266 + PN532 CODE (reference – upload this to your ESP8266)
+//  (Include the required libraries: ESP8266WiFi, Firebase_ESP_Client, etc.)
+/*
+  // ================== ESP8266 ARDUINO SKETCH ==================
+  #include <ESP8266WiFi.h>
+  #include <Firebase_ESP_Client.h>
+  #include <PN532_I2C.h>
+  #include <PN532.h>
+  #include <NfcAdapter.h>
+
+  // Provide the token generation process info.
+  #include <addons/TokenHelper.h>
+
+  // WiFi credentials
+  #define WIFI_SSID "YOUR_WIFI_SSID"
+  #define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
+
+  // Firebase project credentials
+  #define API_KEY "AIzaSyBjvcid8BGvrY71z1u3Eva6FI6tqCy7fb0"
+  #define FIREBASE_PROJECT_ID "gym-attendance-e231d"
+
+  // User Email and Password for authentication (optional, but recommended)
+  #define USER_EMAIL "your-email@example.com"
+  #define USER_PASSWORD "your-password"
+
+  FirebaseData fbdo;
+  FirebaseAuth auth;
+  FirebaseConfig config;
+
+  PN532_I2C pn532_i2c(Wire);
+  NfcAdapter nfc = NfcAdapter(pn532_i2c);
+  String lastTag = "";
+
+  unsigned long lastPing = 0;
+  const unsigned long pingInterval = 5000; // send heartbeat every 5 sec
+
+  void setup() {
+    Serial.begin(115200);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("\nWiFi connected");
+
+    // Firebase setup
+    config.api_key = API_KEY;
+    auth.user.email = USER_EMAIL;
+    auth.user.password = USER_PASSWORD;
+    config.token_status_callback = tokenStatusCallback; // see addons/TokenHelper
+    Firebase.begin(&config, &auth);
+
+    nfc.begin();
+    Serial.println("PN532 NFC reader ready");
+  }
+
+  void loop() {
+    if (nfc.tagPresent()) {
+      NfcTag tag = nfc.read();
+      String uid = tag.getUidString();
+      uid.replace(":", ""); // remove colons if present
+      uid.toUpperCase();
+      if (uid != lastTag) {
+        lastTag = uid;
+        Serial.println("Tag UID: " + uid);
+        // Send to Firestore
+        if (Firebase.ready()) {
+          FirebaseJson content;
+          content.set("fields/uid/stringValue", uid);
+          String documentPath = "rfid_scans/" + String(millis()); // unique ID
+          if (Firebase.Firestore.createDocument(&fbdo, FIREBASE_PROJECT_ID, "", documentPath.c_str(), content.raw())) {
+            Serial.println("RFID sent to Firestore");
+          } else {
+            Serial.println("Firestore error: " + fbdo.errorReason());
+          }
+        }
+      }
+      delay(1000);
+    }
+
+    // Heartbeat – update scanner/status document every 5 seconds
+    if (millis() - lastPing > pingInterval) {
+      lastPing = millis();
+      if (Firebase.ready()) {
+        FirebaseJson content;
+        content.set("fields/lastSeen/timestampValue", Firebase.getCurrentTimestamp());
+        // Use merge so we don't overwrite other fields
+        if (Firebase.Firestore.patchDocument(&fbdo, FIREBASE_PROJECT_ID, "", "scanner/status", content.raw(), "lastSeen")) {
+          Serial.println("Heartbeat sent");
+        } else {
+          Serial.println("Heartbeat error: " + fbdo.errorReason());
+        }
+      }
+    }
+  }
+  // ================== END OF ESP8266 SKETCH ==================
+*/
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const DB = {
+  async getMembers(){try{const snap=await db.collection('members').get();return snap.docs.map(d=>({...d.data(),id:d.id}));}catch(e){console.error(e);return[];}},
+  async addMember(m){const id='M'+Date.now()+Math.floor(Math.random()*999);m.id=id;await db.collection('members').doc(id).set(m);return m;},
+  async updateMember(id,u){await db.collection('members').doc(id).update(u);},
+  async deleteMember(id){await db.collection('members').doc(id).delete();},
+  async getMemberByRFID(rfid){const snap=await db.collection('members').where('rfid','==',rfid.toUpperCase()).get();if(snap.empty)return null;const m={...snap.docs[0].data(),id:snap.docs[0].id};return m.active===false?null:m;},
+  async getAttendance(){try{const snap=await db.collection('attendance').orderBy('time','asc').get();return snap.docs.map(d=>({...d.data(),id:d.id}));}catch(e){return[];}},
+  async logAttendance(e){await db.collection('attendance').add({...e,time:new Date().toISOString()});},
+  async getTodayAtt(){const t=new Date().toDateString();const all=await this.getAttendance();return all.filter(a=>new Date(a.time).toDateString()===t);},
+  async getRecentAtt(n=8){const snap=await db.collection('attendance').orderBy('time','desc').limit(n).get();return snap.docs.map(d=>({...d.data(),id:d.id}));},
+  async hasCheckedInToday(memberId){
+    try{
+      const today=new Date();
+      const startOfDay=new Date(today.getFullYear(),today.getMonth(),today.getDate()).toISOString();
+      const endOfDay=new Date(today.getFullYear(),today.getMonth(),today.getDate()+1).toISOString();
+      const snap=await db.collection('attendance')
+        .where('memberId','==',memberId)
+        .where('time','>=',startOfDay)
+        .where('time','<',endOfDay)
+        .limit(1).get();
+      return !snap.empty;
+    }catch(e){
+      // Composite index may be missing — fallback to client-side filter
+      console.warn('hasCheckedInToday index missing, using fallback:',e.message);
+      try{
+        const t=new Date().toDateString();
+        const all=await db.collection('attendance').where('memberId','==',memberId).get();
+        return all.docs.some(d=>new Date(d.data().time).toDateString()===t);
+      }catch(e2){
+        console.error('hasCheckedInToday fallback failed:',e2);
+        return false; // If all else fails, allow check-in
+      }
+    }
+  }
+};
+
+let currentMember=null,selectedPlan=null,capturedPhotoDataURL=null;
+let cameraStream=null,facingMode='user',memberFilter='all';
+let deleteTargetId=null,editTargetId=null;
+
+// ══════════════════════════════════════════════
+//  🔗 REGISTER PAGE URL
+//  Set this to your hosted register.html URL
+//  e.g. "https://evovlefitness.netlify.app/register.html"
+// ══════════════════════════════════════════════
+const REGISTER_URL = window.location.origin !== 'null'
+  ? window.location.origin + '/register.html'
+  : 'https://evovlekiosk.pages.dev/register';
+
+// ── QR MODAL ──
+let qrInstance = null;
+function showQRModal(){
+  document.getElementById('qr-modal').classList.remove('hidden');
+  document.getElementById('qr-url-label').textContent = REGISTER_URL;
+  const wrap = document.getElementById('qr-canvas-wrap');
+  wrap.innerHTML = '';
+  qrInstance = new QRCode(wrap, {
+    text: REGISTER_URL,
+    width: 200,
+    height: 200,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+function closeQRModal(){document.getElementById('qr-modal').classList.add('hidden');}
+
+function showSection(s){
+  document.querySelectorAll('#kiosk-main > section').forEach(el=>el.classList.add('hidden'));
+  document.getElementById(s+'-section').classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+s);if(nb)nb.classList.add('active');
+  if(s==='register')resetRegistration();
+  if(s==='home'){updateStats();renderRecentCheckins();}
+  if(s==='members')renderMembers();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── STATS ──
+async function updateStats(){
+  // Total members count — not realtime-critical, fetch once
+  const members = await DB.getMembers();
+  const total   = members.filter(function(m) { return m.active !== false; }).length;
+  ['quick-total','quick-total-m'].forEach(function(id) {
+    animateCounter(document.getElementById(id), total);
+  });
+  // Today's check-in count is handled by the realtime onSnapshot listener above
+}
+
+// ── RECENT CHECK-INS TICKER ──
+// Now handled by the realtime onSnapshot listener — this is kept as a no-op
+// so existing call-sites (showSection, etc.) don't break.
+function renderRecentCheckins(){ /* realtime listener handles this */ }
+
+// ── CHECK-IN ──
+function focusRFID(){document.getElementById('rfid-input').focus();}
+async function processRFID(){
+  const input=document.getElementById('rfid-input');
+  const tag=input.value.trim().toUpperCase();
+  if(!tag){showNotif('Please enter an RFID tag','warning');return;}
+  input.value='';
+  showNotif('Looking up tag...','info');
+  try{
+    const member=await DB.getMemberByRFID(tag);
+    if(!member){showNotif('Tag not registered — register this member first','error');return;}
+
+    // ── CHECK: already checked in today? ──
+    const alreadyIn=await DB.hasCheckedInToday(member.id);
+    if(alreadyIn){
+      currentMember=member;
+      showAlreadyCheckedIn(member);
+      return;
+    }
+
+    const daysLeft=member.expiry?Math.ceil((new Date(member.expiry)-new Date())/864e5):null;
+    await DB.logAttendance({memberId:member.id,rfid:member.rfid,memberName:member.name,memberPlan:member.plan,memberPhoto:member.photo||null,paid:member.plan!=='entry'});
+    currentMember=member;showMemberModal(member,daysLeft);updateStats();renderRecentCheckins();
+  }catch(err){
+    console.error('processRFID error:',err);
+    showNotif('Check-in error: '+err.message,'error');
+  }
+}
+
+// ── CHECK-IN MODAL ──
+function showMemberModal(member,daysLeft){
+  const pw=document.getElementById('modal-photo-wrap'),iw=document.getElementById('modal-init-wrap');
+  if(member.photo){document.getElementById('modal-photo').src=member.photo;pw.classList.remove('hidden');iw.style.display='none';}
+  else{pw.classList.add('hidden');iw.style.display='flex';document.getElementById('modal-initial').textContent=member.name.charAt(0).toUpperCase();}
+  document.getElementById('modal-name').textContent=member.name;
+  document.getElementById('modal-rfid-label').textContent='RFID: '+member.rfid;
+  document.getElementById('modal-plan').textContent=member.plan==='entry'?'Pay Per Entry':'Monthly';
+  const exR=document.getElementById('modal-expiry-row'),dR=document.getElementById('modal-days-row');
+  const stEl=document.getElementById('modal-status'),actEl=document.getElementById('modal-actions');
+  if(member.plan==='entry'){
+    exR.style.display='none';dR.style.display='none';
+    stEl.innerHTML='<span class="text-blue-400">WALK-IN</span>';
+    const entryPrice=member.isStudent?50:70;
+    actEl.innerHTML=`<div class="bg-blue-600/20 border border-blue-600/30 rounded-xl p-4 text-center"><p class="text-blue-300 mb-1 text-sm font-semibold">Please pay at counter</p><p class="text-3xl font-bold font-oswald text-white">₱${entryPrice}.00</p>${member.isStudent?'<p class="text-[10px] text-blue-400 mt-1 uppercase tracking-wider font-bold">Student Rate</p>':''}</div><button onclick="confirmWalkIn()" class="w-full btn-gold py-3 rounded-xl font-oswald uppercase tracking-wider"><i class="fas fa-check-circle mr-2"></i>Confirm Payment</button>`;
+  } else {
+    exR.style.display='flex';dR.style.display='flex';
+    document.getElementById('modal-expiry').textContent=new Date(member.expiry).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('modal-days').textContent=daysLeft>0?daysLeft+' days':'EXPIRED';
+    const monthlyPrice=member.isStudent?600:900;
+    const entryFee=member.isStudent?50:70;
+    if(daysLeft<=0){
+      stEl.innerHTML='<span class="text-red-500">EXPIRED</span>';
+      actEl.innerHTML=`<button onclick="payEntry()" class="w-full btn-gold py-3 rounded-xl font-oswald uppercase tracking-wider">Pay Entry Fee (₱${entryFee})</button><button onclick="renewMember()" class="w-full border border-yellow-600 text-yellow-600 py-3 rounded-xl hover:bg-yellow-600/10 text-sm transition-colors mt-2 font-semibold">Renew Membership (₱${monthlyPrice})</button>`;
+    } else if(daysLeft<=5){
+      stEl.innerHTML='<span class="text-yellow-500">EXPIRING SOON</span>';
+      actEl.innerHTML=`<div class="bg-yellow-600/20 border border-yellow-600/30 rounded-xl p-4 text-center"><p class="text-yellow-400 mb-1 text-sm font-semibold">Expiring in ${daysLeft} days</p><button onclick="renewMember()" class="text-yellow-600 underline text-sm mt-1 inline-block">Renew Now (₱${monthlyPrice})</button></div><div class="bg-green-600/20 border border-green-600/30 rounded-xl p-3 flex items-center justify-center gap-2 mt-2"><i class="fas fa-check-circle text-green-500"></i><span class="text-green-400 text-sm font-semibold">Check-in logged</span></div>`;
+      showNotif('Welcome back, '+member.name+'!','success');
+    } else {
+      stEl.innerHTML='<span class="text-green-500">ACTIVE</span>';
+      actEl.innerHTML=`<div class="bg-green-600/20 border border-green-600/30 rounded-xl p-5 text-center"><i class="fas fa-check-circle text-green-500 text-3xl mb-2 block"></i><p class="text-green-400 font-bold text-base">Check-in Successful!</p><p class="text-gray-500 text-xs mt-1">${daysLeft} days remaining</p></div>`;
+      showNotif('Welcome back, '+member.name+'!','success');
+    }
+  }
+  document.getElementById('member-modal').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('member-modal').classList.add('hidden');currentMember=null;}
+
+// ── ALREADY CHECKED IN TODAY ──
+function showAlreadyCheckedIn(member){
+  const pw=document.getElementById('modal-photo-wrap'),iw=document.getElementById('modal-init-wrap');
+  if(member.photo){document.getElementById('modal-photo').src=member.photo;pw.classList.remove('hidden');iw.style.display='none';}
+  else{pw.classList.add('hidden');iw.style.display='flex';document.getElementById('modal-initial').textContent=member.name.charAt(0).toUpperCase();}
+  document.getElementById('modal-name').textContent=member.name;
+  document.getElementById('modal-rfid-label').textContent='RFID: '+member.rfid;
+  document.getElementById('modal-plan').textContent=member.plan==='entry'?'Pay Per Entry':'Monthly';
+  document.getElementById('modal-expiry-row').style.display='none';
+  document.getElementById('modal-days-row').style.display='none';
+  document.getElementById('modal-status').innerHTML='<span class="text-yellow-400">ALREADY CHECKED IN</span>';
+  document.getElementById('modal-actions').innerHTML=`
+    <div class="bg-yellow-600/15 border border-yellow-600/30 rounded-lg p-5 text-center">
+      <i class="fas fa-clock-rotate-left text-yellow-500 text-3xl mb-3 block"></i>
+      <p class="text-yellow-400 font-semibold text-sm">Already checked in today</p>
+      <p class="text-gray-500 text-xs mt-1">${member.name} has already logged in today.<br>Only one check-in is allowed per day.</p>
+    </div>`;
+  document.getElementById('member-modal').classList.remove('hidden');
+  showNotif(member.name+' already checked in today','warning');
+}
+function confirmWalkIn(){showNotif('Walk-in payment confirmed — Access granted ✓','success');closeModal();}
+function payEntry(){showNotif('Entry fee paid — Access granted ✓','success');closeModal();}
+async function renewMember(){
+  if(!currentMember)return;
+  const exp=new Date();exp.setDate(exp.getDate()+30);
+  await DB.updateMember(currentMember.id,{plan:'monthly',expiry:exp.toISOString()});
+  showNotif('Membership renewed — 30 days added ✓','success');
+  closeModal();updateStats();
+}
+
+// ── REGISTRATION ──
+let isStudent=false;
+let schoolIdPhotoDataURL=null;
+let sidStream=null, sidFacingMode='environment';
+
+function setStudentStatus(val){
+  isStudent=val;
+  document.getElementById('type-regular').className='plan-card dark-card rounded-xl p-4 border-2 text-center cursor-pointer '+(val?'border-transparent':'border-yellow-600 bg-yellow-600/10');
+  document.getElementById('type-student').className='plan-card dark-card rounded-xl p-4 border-2 text-center cursor-pointer '+(val?'border-blue-500 bg-blue-600/10':'border-transparent');
+  document.getElementById('school-id-section').classList.toggle('hidden',!val);
+}
+
+function resetRegistration(){
+  selectedPlan=null;capturedPhotoDataURL=null;isStudent=false;schoolIdPhotoDataURL=null;
+  ['reg-name','reg-email','reg-phone','reg-address','reg-birthday','reg-emergency'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.classList.remove('valid','invalid');}});
+  ['name-err','email-err','phone-err'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');});
+  setStudentStatus(false);
+  document.getElementById('school-id-placeholder').classList.remove('hidden');
+  document.getElementById('school-id-taken').classList.add('hidden');
+  document.getElementById('school-id-taken').classList.remove('flex');
+  document.getElementById('school-id-err').classList.add('hidden');
+  generateRFID();resetPlanSelection();resetPhotoCapture();setStep(1);
+}
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('reg-step-'+i).classList.toggle('hidden',i!==n);
+    const dot=document.getElementById('step-dot-'+i);
+    dot.className='step-dot '+(i<n?'done':i===n?'active':'pending');
+    if(i<3)document.getElementById('step-line-'+i).className='step-line '+(i<n?'done':'');
+  });
+}
+function goToStep2(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim();
+  let ok=true;
+  if(name.length<2){markInv('reg-name','name-err','At least 2 characters');ok=false;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){markInv('reg-email','email-err','Valid email required');ok=false;}
+  if(phone.replace(/\D/g,'').length<10){markInv('reg-phone','phone-err','At least 10 digits');ok=false;}
+  if(isStudent&&!schoolIdPhotoDataURL){
+    document.getElementById('school-id-err').classList.remove('hidden');
+    document.getElementById('school-id-section').scrollIntoView({behavior:'smooth',block:'center'});
+    ok=false;
+  }
+  if(!document.getElementById('reg-rfid').value.trim())generateRFID();
+  if(!ok){showNotif('Please fix the highlighted fields','error');return;}
+  setStep(2);
+}
+function goToStep3(){
+  if(!selectedPlan){showNotif('Please select a membership plan','error');return;}
+  const name=document.getElementById('reg-name').value.trim();
+  const rfid=document.getElementById('reg-rfid').value.trim().toUpperCase();
+  document.getElementById('sum-name').textContent=name;
+  document.getElementById('sum-email').textContent=document.getElementById('reg-email').value.trim();
+  document.getElementById('sum-phone').textContent=document.getElementById('reg-phone').value.trim();
+  document.getElementById('sum-rfid').textContent=rfid;
+  document.getElementById('sum-plan').textContent=selectedPlan==='entry'?`Walk-in / Daily`:`Monthly`;
+  const entryPrice=isStudent?50:70;
+  const monthlyPrice=isStudent?600:900;
+  document.getElementById('sum-amount').textContent=selectedPlan==='entry'?`₱${entryPrice}`:`₱${monthlyPrice}`;
+  document.getElementById('sum-student-type').innerHTML=isStudent?'<span class="text-blue-400 flex items-center gap-1"><i class="fas fa-graduation-cap text-xs"></i> Student</span>':'<span class="text-gray-300">Regular</span>';
+  document.getElementById('sum-initial').textContent=name.charAt(0).toUpperCase();
+  const exRow=document.getElementById('sum-expiry-row');
+  if(selectedPlan==='monthly'){const exp=new Date();exp.setDate(exp.getDate()+30);document.getElementById('sum-expiry').textContent=exp.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});exRow.style.display='flex';}
+  else exRow.style.display='none';
+  const spw=document.getElementById('sum-photo-wrap'),siw=document.getElementById('sum-init-wrap');
+  if(capturedPhotoDataURL){document.getElementById('sum-photo').src=capturedPhotoDataURL;spw.classList.remove('hidden');siw.classList.add('hidden');}
+  else{spw.classList.add('hidden');siw.classList.remove('hidden');}
+  setStep(3);
+}
+async function completeRegistration(){
+  const btn=document.getElementById('btn-complete');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i>Registering...';
+  const name=document.getElementById('reg-name').value.trim();
+  const rfid=document.getElementById('reg-rfid').value.trim().toUpperCase();
+  const existing=await DB.getMemberByRFID(rfid);
+  if(existing){showNotif('RFID '+rfid+' is already assigned to '+existing.name,'error');btn.disabled=false;btn.innerHTML='<i class="fas fa-check mr-2"></i>Complete Registration';generateRFID();return;}
+  const expiry=selectedPlan==='monthly'?(()=>{const d=new Date();d.setDate(d.getDate()+30);return d.toISOString();})():null;
+  const member=await DB.addMember({name,email:document.getElementById('reg-email').value.trim(),phone:document.getElementById('reg-phone').value.trim(),rfid,address:document.getElementById('reg-address').value.trim(),birthday:document.getElementById('reg-birthday').value,emergency:document.getElementById('reg-emergency').value.trim(),plan:selectedPlan,photo:capturedPhotoDataURL||null,isStudent,schoolIdPhoto:schoolIdPhotoDataURL||null,registered:new Date().toISOString(),active:true,expiry});
+  await DB.logAttendance({memberId:member.id,rfid:member.rfid,memberName:member.name,memberPlan:member.plan,memberPhoto:member.photo||null,paid:selectedPlan!=='entry'});
+  setTimeout(()=>{
+    document.getElementById('success-name-msg').textContent=name+' is now a member!';
+    document.getElementById('suc-rfid').textContent=rfid;
+    document.getElementById('suc-plan').textContent=selectedPlan==='entry'?'Pay Per Entry':'Monthly';
+    const ser=document.getElementById('suc-expiry-row');
+    if(expiry){document.getElementById('suc-expiry').textContent=new Date(expiry).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});ser.style.display='flex';}
+    else ser.style.display='none';
+    showSection('success');updateStats();
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-check mr-2"></i>Complete Registration';
+  },600);
+}
+function selectPlan(plan){
+  selectedPlan=plan;
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('plan-'+plan).classList.add('selected');
+  const entryPrice=isStudent?50:70;
+  const monthlyPrice=isStudent?600:900;
+  const info={entry:{title:`Walk-in / Daily — ₱${entryPrice}/visit`,desc:'No commitment. Pay at the counter on each visit.'},monthly:{title:`Monthly Membership — ₱${monthlyPrice}/month`,desc:'Unlimited access for 30 days starting today.'}};
+  document.getElementById('plan-title').textContent=info[plan].title;
+  document.getElementById('plan-desc').textContent=info[plan].desc;
+  document.getElementById('plan-details').classList.remove('hidden');
+  document.getElementById('btn-to-step3').disabled=false;
+}
+function resetPlanSelection(){selectedPlan=null;document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));document.getElementById('plan-details').classList.add('hidden');const b=document.getElementById('btn-to-step3');if(b)b.disabled=true;}
+
+// ── MEMBERS LIST ──
+function setMF(f){memberFilter=f;document.querySelectorAll('.tab-pill').forEach(b=>b.classList.remove('active'));document.getElementById('filter-'+f).classList.add('active');renderMembers();}
+function filterMembers(){renderMembers();}
+async function renderMembers(){
+  const search=(document.getElementById('member-search')?.value||'').toLowerCase();
+  let members=await DB.getMembers();
+  if(memberFilter==='monthly')members=members.filter(m=>m.plan==='monthly');
+  if(memberFilter==='entry')members=members.filter(m=>m.plan==='entry');
+  if(memberFilter==='expired')members=members.filter(m=>m.plan==='monthly'&&m.expiry&&new Date(m.expiry)<new Date());
+  if(search)members=members.filter(m=>(m.name||'').toLowerCase().includes(search)||(m.rfid||'').toLowerCase().includes(search)||(m.email||'').toLowerCase().includes(search)||(m.phone||'').includes(search));
+  document.getElementById('members-count').textContent=members.length+' member'+(members.length!==1?'s':'');
+  const tbody=document.getElementById('members-tbody'),empty=document.getElementById('members-empty');
+  if(!members.length){tbody.innerHTML='';empty.classList.remove('hidden');return;}
+  empty.classList.add('hidden');
+  tbody.innerHTML=members.map(m=>{
+    const daysLeft=m.expiry?Math.ceil((new Date(m.expiry)-new Date())/864e5):null;
+    const isExp=m.plan==='monthly'&&daysLeft!==null&&daysLeft<=0;
+    const isSoon=m.plan==='monthly'&&daysLeft!==null&&daysLeft>0&&daysLeft<=5;
+    const status=m.active===false?'<span class="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded-full">Inactive</span>':isExp?'<span class="text-xs text-red-400 bg-red-900/30 px-2 py-0.5 rounded-full">Expired</span>':isSoon?'<span class="text-xs text-yellow-500 bg-yellow-900/30 px-2 py-0.5 rounded-full">Expiring</span>':'<span class="text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded-full">Active</span>';
+    const planH=m.plan==='monthly'?'<span class="text-yellow-600 text-xs">Monthly</span>':'<span class="text-gray-400 text-xs">Walk-in</span>';
+    const expT=m.expiry?`<span class="${isExp?'text-red-400':isSoon?'text-yellow-500':'text-gray-300'}">${new Date(m.expiry).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}</span>`:'<span class="text-gray-600">—</span>';
+    const av=m.photo?`<img src="${m.photo}" class="w-9 h-9 rounded-full object-cover border border-yellow-600/30 flex-shrink-0" alt="">`:`<div class="w-9 h-9 rounded-full bg-gradient-to-b from-gray-700 to-gray-900 border border-white/10 flex items-center justify-center text-sm font-bold flex-shrink-0">${m.name.charAt(0).toUpperCase()}</div>`;
+    return `<tr class="row-hover border-b border-white/5 transition-colors"><td class="py-3.5 px-5"><div class="flex items-center gap-3">${av}<div class="min-w-0"><p class="font-medium text-sm truncate max-w-[140px]">${m.name}</p><p class="text-xs text-gray-500 truncate max-w-[140px]">${m.email||''}</p></div></div></td><td class="py-3.5 px-4 hidden sm:table-cell"><span class="font-mono text-yellow-600 text-xs">${m.rfid}</span></td><td class="py-3.5 px-4 hidden md:table-cell text-xs text-gray-400">${m.phone||'—'}</td><td class="py-3.5 px-4">${planH}</td><td class="py-3.5 px-4 hidden lg:table-cell text-xs">${expT}</td><td class="py-3.5 px-4">${status}</td><td class="py-3.5 px-4"><div class="flex gap-1"><button onclick="openEditModal('${m.id}')" class="w-7 h-7 rounded flex items-center justify-center text-gray-500 hover:text-yellow-600 hover:bg-white/5 transition-all"><i class="fas fa-edit text-xs"></i></button><button onclick="openDeleteModal('${m.id}','${m.name.replace(/'/g,"\\'")}') " class="w-7 h-7 rounded flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-white/5 transition-all"><i class="fas fa-trash text-xs"></i></button></div></td></tr>`;
+  }).join('');
+}
+
+// ── EDIT / DELETE ──
+function toggleEditExpiry(plan){document.getElementById('edit-expiry-row').classList.toggle('hidden',plan!=='monthly');if(plan==='monthly'&&!document.getElementById('edit-expiry').value){const d=new Date();d.setDate(d.getDate()+30);document.getElementById('edit-expiry').value=d.toISOString().slice(0,10);}}
+async function openEditModal(id){
+  const members=await DB.getMembers();
+  const m=members.find(m=>m.id===id);if(!m)return;
+  editTargetId=id;
+  document.getElementById('edit-name').value=m.name||'';
+  document.getElementById('edit-email').value=m.email||'';
+  document.getElementById('edit-phone').value=m.phone||'';
+  document.getElementById('edit-plan').value=m.plan||'entry';
+  document.getElementById('edit-active').value=String(m.active!==false);
+  const exR=document.getElementById('edit-expiry-row');
+  if(m.plan==='monthly'){document.getElementById('edit-expiry').value=m.expiry?m.expiry.slice(0,10):'';exR.classList.remove('hidden');}
+  else exR.classList.add('hidden');
+  document.getElementById('edit-modal').classList.remove('hidden');
+}
+function closeEditModal(){document.getElementById('edit-modal').classList.add('hidden');editTargetId=null;}
+async function saveEdit(){
+  if(!editTargetId)return;
+  const plan=document.getElementById('edit-plan').value;
+  const expiry=plan==='monthly'?new Date(document.getElementById('edit-expiry').value).toISOString():null;
+  await DB.updateMember(editTargetId,{name:document.getElementById('edit-name').value.trim(),email:document.getElementById('edit-email').value.trim(),phone:document.getElementById('edit-phone').value.trim(),plan,expiry,active:document.getElementById('edit-active').value==='true'});
+  showNotif('Member updated successfully','success');
+  closeEditModal();renderMembers();
+}
+function openDeleteModal(id,name){deleteTargetId=id;document.getElementById('delete-msg').textContent='Delete "'+name+'"? This cannot be undone.';document.getElementById('delete-modal').classList.remove('hidden');}
+function closeDeleteModal(){document.getElementById('delete-modal').classList.add('hidden');deleteTargetId=null;}
+async function confirmDelete(){
+  if(!deleteTargetId)return;
+  await DB.deleteMember(deleteTargetId);
+  showNotif('Member deleted','info');
+  closeDeleteModal();renderMembers();updateStats();
+}
+
+// ── LIVE CLOCK ──
+function startKioskClock(){
+  function tick(){
+    const now=new Date();
+    const timeEl=document.getElementById('kiosk-clock-time');
+    const dateEl=document.getElementById('kiosk-clock-date');
+    if(timeEl)timeEl.textContent=now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+    if(dateEl)dateEl.textContent=now.toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+  tick();setInterval(tick,1000);
+}
+
+// ── IDLE AUTO-FOCUS ──
+let idleTimer=null;
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(()=>{
+    const currentSection=document.querySelector('#kiosk-main > section:not(.hidden)');
+    if(currentSection&&currentSection.id==='home-section'){
+      const inp=document.getElementById('rfid-input');
+      if(inp&&document.activeElement!==inp)inp.focus();
+    }
+  },8000);
+}
+document.addEventListener('mousemove',resetIdleTimer);
+document.addEventListener('keydown',resetIdleTimer);
+document.addEventListener('touchstart',resetIdleTimer);
+function generateRFID(){document.getElementById('reg-rfid').value='EF'+Math.floor(100+Math.random()*9000);}
+async function openCamera(){capturedPhotoDataURL=null;document.getElementById('camera-modal').classList.remove('hidden');document.getElementById('cam-live-panel').classList.remove('hidden');document.getElementById('cam-preview-panel').classList.add('hidden');document.getElementById('cam-error-panel').classList.add('hidden');await startCamera();}
+async function startCamera(){stopCamera();try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode,width:{ideal:1280},height:{ideal:960}},audio:false});document.getElementById('video-feed').srcObject=cameraStream;}catch{document.getElementById('cam-live-panel').classList.add('hidden');document.getElementById('cam-error-panel').classList.remove('hidden');}}
+function stopCamera(){if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}}
+async function switchCamera(){facingMode=facingMode==='user'?'environment':'user';await startCamera();}
+function capturePhoto(){const v=document.getElementById('video-feed'),c=document.getElementById('capture-canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;const ctx=c.getContext('2d');if(facingMode==='user'){ctx.translate(c.width,0);ctx.scale(-1,1);}ctx.drawImage(v,0,0);capturedPhotoDataURL=c.toDataURL('image/jpeg',0.85);const fl=document.getElementById('flash-overlay');fl.classList.remove('hidden');setTimeout(()=>fl.classList.add('hidden'),500);document.getElementById('cam-preview-img').src=capturedPhotoDataURL;document.getElementById('cam-live-panel').classList.add('hidden');document.getElementById('cam-preview-panel').classList.remove('hidden');stopCamera();}
+function retakePhoto(){capturedPhotoDataURL=null;document.getElementById('cam-preview-panel').classList.add('hidden');document.getElementById('cam-live-panel').classList.remove('hidden');startCamera();}
+function confirmPhoto(){if(!capturedPhotoDataURL)return;document.getElementById('photo-preview').src=capturedPhotoDataURL;document.getElementById('photo-placeholder').classList.add('hidden');document.getElementById('photo-taken').classList.remove('hidden');document.getElementById('photo-taken').classList.add('flex');closeCamera();showNotif('Photo added!','success');}
+function closeCamera(){stopCamera();document.getElementById('camera-modal').classList.add('hidden');}
+function removePhoto(){capturedPhotoDataURL=null;document.getElementById('photo-preview').src='';document.getElementById('photo-taken').classList.add('hidden');document.getElementById('photo-taken').classList.remove('flex');document.getElementById('photo-placeholder').classList.remove('hidden');}
+function resetPhotoCapture(){capturedPhotoDataURL=null;const p=document.getElementById('photo-preview');if(p)p.src='';document.getElementById('photo-taken')?.classList.add('hidden');document.getElementById('photo-taken')?.classList.remove('flex');document.getElementById('photo-placeholder')?.classList.remove('hidden');}
+
+// ── SCHOOL ID CAMERA ──
+async function openSchoolIdCamera(){
+  schoolIdPhotoDataURL=null;
+  document.getElementById('school-id-modal').classList.remove('hidden');
+  document.getElementById('sid-live-panel').classList.remove('hidden');
+  document.getElementById('sid-preview-panel').classList.add('hidden');
+  document.getElementById('sid-error-panel').classList.add('hidden');
+  await startSidCamera();
+}
+async function startSidCamera(){
+  stopSidCamera();
+  try{
+    sidStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:sidFacingMode,width:{ideal:1280},height:{ideal:720}},audio:false});
+    document.getElementById('sid-video-feed').srcObject=sidStream;
+  }catch{
+    document.getElementById('sid-live-panel').classList.add('hidden');
+    document.getElementById('sid-error-panel').classList.remove('hidden');
+  }
+}
+function stopSidCamera(){if(sidStream){sidStream.getTracks().forEach(t=>t.stop());sidStream=null;}}
+async function switchSidCamera(){sidFacingMode=sidFacingMode==='environment'?'user':'environment';await startSidCamera();}
+function captureSchoolId(){
+  const v=document.getElementById('sid-video-feed'),c=document.getElementById('sid-canvas');
+  c.width=v.videoWidth||1280;c.height=v.videoHeight||720;
+  c.getContext('2d').drawImage(v,0,0);
+  schoolIdPhotoDataURL=c.toDataURL('image/jpeg',0.85);
+  document.getElementById('sid-preview-img').src=schoolIdPhotoDataURL;
+  document.getElementById('sid-live-panel').classList.add('hidden');
+  document.getElementById('sid-preview-panel').classList.remove('hidden');
+  stopSidCamera();
+}
+function retakeSchoolId(){schoolIdPhotoDataURL=null;document.getElementById('sid-preview-panel').classList.add('hidden');document.getElementById('sid-live-panel').classList.remove('hidden');startSidCamera();}
+function confirmSchoolId(){
+  if(!schoolIdPhotoDataURL)return;
+  document.getElementById('school-id-preview').src=schoolIdPhotoDataURL;
+  document.getElementById('school-id-placeholder').classList.add('hidden');
+  document.getElementById('school-id-taken').classList.remove('hidden');
+  document.getElementById('school-id-taken').classList.add('flex');
+  document.getElementById('school-id-err').classList.add('hidden');
+  closeSchoolIdCamera();
+  showNotif('School ID captured!','success');
+}
+function closeSchoolIdCamera(){stopSidCamera();document.getElementById('school-id-modal').classList.add('hidden');}
+function removeSchoolId(){
+  schoolIdPhotoDataURL=null;
+  document.getElementById('school-id-preview').src='';
+  document.getElementById('school-id-taken').classList.add('hidden');
+  document.getElementById('school-id-taken').classList.remove('flex');
+  document.getElementById('school-id-placeholder').classList.remove('hidden');
+}
+
+// ── VALIDATION ──
+function vf(inputId,errId,validator,errMsg){const el=document.getElementById(inputId),err=document.getElementById(errId),ok=validator(el.value.trim());el.classList.toggle('valid',ok);el.classList.toggle('invalid',!ok);err.textContent=errMsg;err.classList.toggle('hidden',ok);}
+function markInv(inputId,errId,errMsg){const el=document.getElementById(inputId),err=document.getElementById(errId);el.classList.add('invalid');el.classList.remove('valid');err.textContent=errMsg;err.classList.remove('hidden');el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();}
+
+// ── NOTIFICATIONS ──
+function showNotif(msg,type='info'){
+  const c=document.getElementById('notifications'),d=document.createElement('div');
+  const colors={success:'border-green-500 text-green-400 bg-green-500/10',error:'border-red-500 text-red-400 bg-red-500/10',warning:'border-yellow-500 text-yellow-400 bg-yellow-500/10',info:'border-blue-500 text-blue-400 bg-blue-500/10'};
+  const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
+  d.className=`notif ${colors[type]} border px-5 py-3 rounded-lg backdrop-blur-md flex items-center gap-3 min-w-[260px] max-w-sm text-sm shadow-xl`;
+  d.innerHTML=`<i class="fas ${icons[type]} flex-shrink-0"></i><span>${msg}</span>`;
+  c.appendChild(d);
+  setTimeout(()=>{d.style.transition='all 0.3s';d.style.opacity='0';d.style.transform='translateX(100%)';setTimeout(()=>d.remove(),300);},3500);
+}
+
+// ── PARTICLES ──
+(function(){
+  const canvas=document.getElementById('particles-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function rand(a,b){return Math.random()*(b-a)+a;}
+  function Particle(){
+    this.x=rand(0,W);this.y=rand(0,H);
+    this.vx=rand(-0.15,0.15);this.vy=rand(-0.35,-0.08);
+    this.size=rand(0.8,2.2);
+    this.alpha=rand(0.1,0.5);this.life=rand(0.3,1);this.decay=rand(0.001,0.003);
+    this.gold=Math.random()>0.4;
+  }
+  Particle.prototype.update=function(){
+    this.x+=this.vx;this.y+=this.vy;this.life-=this.decay;
+    if(this.life<=0){this.life=rand(0.3,1);this.x=rand(0,W);this.y=H+10;}
+  };
+  for(let i=0;i<90;i++)particles.push(new Particle());
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.update();
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=p.gold?`rgba(212,168,83,${p.alpha*p.life})`:`rgba(255,255,255,${p.alpha*p.life*0.4})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── ANIMATED COUNTERS ──
+function animateCounter(el, target) {
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  if (start === target) return;
+  const duration = 600, startTime = performance.now();
+  function step(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * ease);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+</script>
+<script>
+// Start clock immediately — elements are already in the DOM
+startKioskClock();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  updateStats();renderRecentCheckins();generateRFID();resetIdleTimer();
+  setTimeout(()=>{const inp=document.getElementById('rfid-input');if(inp)inp.focus();},300);
+
+  // RFID scanner auto-submit: scanners type fast then send Enter.
+  // Also handle scanners that don't send Enter by watching input length stability.
+  const rfidInput=document.getElementById('rfid-input');
+  if(rfidInput){
+    let rfidTimer=null;
+    rfidInput.addEventListener('input',()=>{
+      clearTimeout(rfidTimer);
+      const val=rfidInput.value.trim();
+      if(!val)return;
+      // Auto-submit after 120ms of no new characters (scanner finished)
+      rfidTimer=setTimeout(()=>{
+        if(rfidInput.value.trim())processRFID();
+      },120);
+    });
+  }
+  ['member-modal','edit-modal','delete-modal','camera-modal','walkin-modal','school-id-modal','qr-modal'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('click',function(e){
+      if(e.target===this){
+        if(id==='member-modal')closeModal();
+        else if(id==='edit-modal')closeEditModal();
+        else if(id==='delete-modal')closeDeleteModal();
+        else if(id==='camera-modal')closeCamera();
+        else if(id==='walkin-modal')closeWalkInModal();
+        else if(id==='school-id-modal')closeSchoolIdCamera();
+        else if(id==='qr-modal')closeQRModal();
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

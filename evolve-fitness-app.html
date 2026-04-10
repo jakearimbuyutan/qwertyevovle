@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Evolve Fitness">
+<meta name="theme-color" content="#04040a">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRXZvbHZlIEZpdG5lc3MiLCJzaG9ydF9uYW1lIjoiRXZvbHZlIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzA0MDQwYSIsInRoZW1lX2NvbG9yIjoiIzA0MDQwYSJ9">
+<title>Evolve Fitness — Member App</title>
+
+<!-- Fixed Script Loading Order -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&family=Alfa+Slab+One&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --gold:#d4a853;--gold2:#f0c060;--gold3:#e8bb6a;
+  --gold-dim:rgba(212,168,83,0.12);
+  --gold-border:rgba(212,168,83,0.22);
+  --gold-glow:rgba(212,168,83,0.35);
+  --bg:#060606;--surface:#0e0e0e;--surface2:#141414;--surface3:#1a1a1a;--surface4:#202020;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text-dim:rgba(255,255,255,0.25);--text-muted:rgba(255,255,255,0.48);--text-soft:rgba(255,255,255,0.7);
+  --green:#4ade80;--green2:#22c55e;--red:#f87171;--red2:#ef4444;
+  --blue:#60a5fa;--blue2:#3b82f6;--amber:#fbbf24;
+  --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:24px;
+}
+*{font-family:'DM Sans',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:#fff;overflow-x:hidden;min-height:100vh;}
+body{display:flex;flex-direction:column;align-items:center;position:relative;}
+#ambient,#app-shell,#login-screen,#top-bar,#bottom-nav,#notif-container{max-width:480px;width:100%;}
+
+/* ── AMBIENT ── */
+#ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg);}
+#ambient::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,0.04) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);}
+
+/* ── LOADING SPINNER ── */
+.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid rgba(212,168,83,0.18);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner-lg{width:40px;height:40px;border-width:4px;}
+
+/* ── CARDS & SURFACES ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);transition:all 0.2s;}
+.card:active{transform:scale(0.98);}
+.card-gold{background:linear-gradient(145deg,var(--surface2),var(--surface));border:1px solid var(--gold-border);border-radius:var(--radius-md);}
+
+/* ── BUTTONS ── */
+.btn-gold{background:linear-gradient(135deg,#f0c060,#c9922e);color:#000;font-weight:800;transition:all 0.2s;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;position:relative;overflow:hidden;}
+.btn-gold::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent);border-radius:inherit;pointer-events:none;}
+.btn-gold:active{transform:scale(0.97);filter:brightness(0.9);}
+.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid var(--border2);color:var(--text-muted);transition:all 0.2s;cursor:pointer;border-radius:var(--radius-md);padding:10px 16px;font-weight:600;}
+.btn-ghost:active{background:rgba(255,255,255,0.1);}
+
+/* ── INPUTS ── */
+.input-dark{background:#141410;border:1.5px solid rgba(255,255,255,0.09);color:#fff;transition:all 0.2s;font-family:'DM Sans',sans-serif;font-weight:500;font-size:1rem;border-radius:12px;padding:12px 14px;width:100%;}
+.input-dark:focus{outline:none;border-color:#d4a853;background:#1c1c2a;box-shadow:0 0 0 3px rgba(212,168,83,0.12);}
+
+/* ── TOP BAR ── */
+#top-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);height:56px;background:rgba(0,0,0,0.97);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:320;backdrop-filter:blur(20px);}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.98);border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:300;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(20px);}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 4px 8px;color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:0.02em;font-weight:500;cursor:pointer;border:none;background:none;transition:color 0.2s;}
+.bnav-btn i{font-size:20px;transition:all 0.2s;}
+.bnav-btn.active{color:#d4a853;}
+
+/* ── PAGE LAYOUT ── */
+#main-content{padding-top:64px;padding-bottom:calc(72px + env(safe-area-inset-bottom));min-height:100vh;position:relative;z-index:1;}
+.tab-section{padding:16px;display:none;}
+.tab-section.active{display:block;animation:tabFadeIn 0.2s ease;}
+@keyframes tabFadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── LOGIN ── */
+#login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1;}
+.screen-visible{display:flex!important;}
+.screen-hidden{display:none!important;}
+.login-box{background:#0e0e0e;border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:36px 26px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 48px rgba(212,168,83,0.15), 0 40px 80px rgba(0,0,0,0.8);animation:loginBoxIn 0.5s cubic-bezier(0.16,1,0.3,1);}
+@keyframes loginBoxIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:400;display:none;align-items:flex-end;justify-content:center;animation:overlayIn 0.2s ease;}
+.modal-overlay.open{display:flex;}
+@keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
+.bottom-sheet{background:#0e0e0e;border:1px solid rgba(255,255,255,0.09);border-bottom:none;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px;padding-bottom:calc(28px + env(safe-area-inset-bottom));animation:slideUp 0.35s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.sheet-handle{width:36px;height:3px;background:rgba(255,255,255,0.15);border-radius:4px;margin:0 auto 20px;}
+
+/* ── NOTIFICATIONS ── */
+#notif-container{position:fixed;top:70px;right:14px;z-index:600;display:flex;flex-direction:column;gap:8px;max-width:300px;}
+.notif{padding:12px 16px;border-radius:16px;border:1px solid;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;animation:slideNotif 0.35s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+@keyframes slideNotif{from{transform:translateX(110%) scale(0.95);opacity:0;}to{transform:translateX(0) scale(1);opacity:1;}}
+.notif.success{background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.4);color:#4ade80;}
+.notif.error{background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.4);color:#f87171;}
+.notif.warning{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:#fbbf24;}
+.notif.info{background:rgba(96,165,250,0.15);border-color:rgba(96,165,250,0.4);color:#60a5fa;}
+
+/* ── PROFILE ── */
+.profile-hero{background:#0e0e0e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;position:relative;overflow:hidden;margin-bottom:14px;}
+.member-avatar{width:72px;height:72px;border-radius:50%;border:2px solid rgba(212,168,83,0.40);object-fit:cover;}
+.avatar-placeholder{width:72px;height:72px;border-radius:50%;border:2px solid rgba(212,168,83,0.35);background:#1a1a14;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#d4a853;}
+.stat-pill{background:#141414;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 8px;text-align:center;flex:1;transition:all 0.2s;}
+.stat-pill:active{background:#1c1c18;}
+.stat-num{font-size:22px;font-weight:800;line-height:1;color:#d4a853;display:block;}
+.stat-label{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-top:4px;display:block;}
+
+/* ── STATUS BADGES ── */
+.plan-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;}
+.plan-monthly{background:rgba(212,168,83,0.12);color:#d4a853;border:1px solid rgba(212,168,83,0.28);}
+.plan-walkin{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.25);}
+.plan-expired{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.25);}
+
+/* ── OFFLINE INDICATOR ── */
+#offline-bar{position:fixed;top:56px;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#eab308;color:#000;text-align:center;padding:6px;font-size:12px;font-weight:600;z-index:45;display:none;}
+
+/* Responsive improvements */
+@media (max-width: 380px) {
+  .login-box{padding:28px 20px;}
+  #top-bar{padding:0 12px;}
+  .tab-section{padding:12px;}
+}
+</style>
+</head>
+<body>
+
+<div id="ambient"></div>
+<div id="offline-bar">⚠️ You are offline</div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen-hidden">
+  <div class="login-box">
+    <div style="font-size:48px;margin-bottom:16px;">💪</div>
+    <h1 style="font-size:28px;font-weight:800;margin-bottom:6px;font-family:'DM Sans',sans-serif;">Evolve Fitness</h1>
+    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px;">Member Portal</p>
+    
+    <input type="text" id="login-input" class="input-dark" placeholder="Member ID or Email" style="margin-bottom:16px;">
+    
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.5);">
+        <input type="checkbox" id="remember-me" style="width:16px;height:16px;cursor:pointer;">
+        Remember me
+      </label>
+    </div>
+    
+    <button onclick="login()" class="btn-gold" style="width:100%;padding:14px;border-radius:12px;font-size:15px;margin-bottom:12px;">
+      <span id="login-btn-text">Log In</span>
+      <span id="login-spinner" style="display:none;" class="spinner"></span>
+    </button>
+    
+    <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:16px;">
+      Don't have an account? Contact the gym to register.
+    </p>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app-shell" class="screen-hidden" style="width:100%;max-width:480px;">
+  <!-- Top Bar -->
+  <div id="top-bar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:20px;">💪</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;line-height:1;">Evolve Fitness</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.35);" id="member-name-top">Member</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="online-status" class="w-2 h-2 rounded-full bg-green-500"></div>
+      <button onclick="logout()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;color:rgba(255,255,255,0.6);font-size:11px;font-weight:600;cursor:pointer;">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main-content">
+    <!-- HOME TAB -->
+    <section id="tab-home" class="tab-section active">
+      <div style="text-align:center;padding:40px 20px;">
+        <div class="spinner-lg" style="margin:0 auto;"></div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:16px;">Loading your dashboard...</p>
+      </div>
+    </section>
+
+    <!-- WORKOUTS TAB -->
+    <section id="tab-workouts" class="tab-section">
+      <div style="text-align:center;padding:40px 20px;">
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);">Workout tracking coming soon!</p>
+        <p style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px;">Track your sets, reps, and progress</p>
+      </div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="tab-profile" class="tab-section">
+      <div class="profile-hero">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div class="avatar-placeholder" id="profile-avatar">M</div>
+          <div style="flex:1;">
+            <h2 style="font-size:18px;font-weight:800;margin-bottom:4px;" id="profile-name">Loading...</h2>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="plan-badge plan-monthly" id="profile-plan">Loading...</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display:flex;gap:8px;">
+          <div class="stat-pill">
+            <span class="stat-num" id="profile-visits">0</span>
+            <span class="stat-label">Visits</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num" id="profile-streak">0</span>
+            <span class="stat-label">Streak</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num" id="profile-workouts">0</span>
+            <span class="stat-label">Workouts</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;margin-bottom:16px;">
+        <h3 style="font-size:13px;font-weight:800;margin-bottom:12px;">Membership Details</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:rgba(255,255,255,0.5);">Member ID</span>
+            <span style="font-size:13px;font-weight:600;" id="profile-memberid">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:rgba(255,255,255,0.5);">Email</span>
+            <span style="font-size:13px;font-weight:600;" id="profile-email">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:rgba(255,255,255,0.5);">Join Date</span>
+            <span style="font-size:13px;font-weight:600;" id="profile-joindate">—</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="logout()" class="btn-ghost" style="width:100%;padding:14px;font-size:14px;">
+        <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i>
+        Log Out
+      </button>
+    </section>
+
+    <!-- MORE TAB -->
+    <section id="tab-more" class="tab-section">
+      <div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:48px;margin-bottom:16px;">🏆</div>
+        <h3 style="font-size:18px;font-weight:800;margin-bottom:8px;">Community Features</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);">Leaderboards, announcements, and social features coming soon!</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div id="bottom-nav">
+    <button class="bnav-btn active" onclick="showTab('home')" id="bnav-home">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn" onclick="showTab('workouts')" id="bnav-workouts">
+      <i class="fas fa-dumbbell"></i>
+      <span>Workouts</span>
+    </button>
+    <button class="bnav-btn" onclick="showTab('profile')" id="bnav-profile">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </button>
+    <button class="bnav-btn" onclick="showTab('more')" id="bnav-more">
+      <i class="fas fa-th"></i>
+      <span>More</span>
+    </button>
+  </div>
+</div>
+
+<!-- Notification Container -->
+<div id="notif-container"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// FIREBASE CONFIGURATION (IMPROVED)
+// ═══════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBjvcid8BGvrY71z1u3Eva6FI6tqCy7fb0",
+  authDomain: "gym-attendance-e231d.firebaseapp.com",
+  projectId: "gym-attendance-e231d",
+  storageBucket: "gym-attendance-e231d.firebasestorage.app",
+  messagingSenderId: "771252079470",
+  appId: "1:771252079470:web:2750c64eedb45eec718f7f"
+};
+
+// Initialize Firebase with error handling
+let db, auth;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  auth = firebase.auth();
+  console.log('✅ Firebase initialized successfully');
+} catch (error) {
+  console.error('❌ Firebase initialization error:', error);
+  showNotif('Failed to connect to database', 'error');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════════════════════════════
+let currentMember = null;
+let isOnline = navigator.onLine;
+let currentTab = 'home';
+
+// ═══════════════════════════════════════════════════════════════
+// NOTIFICATIONS SYSTEM (IMPROVED)
+// ═══════════════════════════════════════════════════════════════
+function showNotif(message, type = 'info') {
+  const container = document.getElementById('notif-container');
+  const notif = document.createElement('div');
+  notif.className = `notif ${type}`;
+  
+  const icons = {
+    success: 'fa-check-circle',
+    error: 'fa-exclamation-circle',
+    warning: 'fa-exclamation-triangle',
+    info: 'fa-info-circle'
+  };
+  
+  notif.innerHTML = `
+    <i class="fas ${icons[type] || icons.info}"></i>
+    <span style="flex:1;">${message}</span>
+  `;
+  
+  container.appendChild(notif);
+  
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    notif.style.transform = 'translateX(110%) scale(0.95)';
+    setTimeout(() => notif.remove(), 350);
+  }, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTHENTICATION (IMPROVED WITH ERROR HANDLING)
+// ═══════════════════════════════════════════════════════════════
+async function login() {
+  const input = document.getElementById('login-input').value.trim();
+  if (!input) {
+    showNotif('Please enter your Member ID or Email', 'warning');
+    return;
+  }
+  
+  // Show loading state
+  document.getElementById('login-btn-text').style.display = 'none';
+  document.getElementById('login-spinner').style.display = 'inline-block';
+  
+  try {
+    // Check if input is email
+    const isEmail = input.includes('@');
+    let memberDoc;
+    
+    if (isEmail) {
+      // Search by email
+      const snapshot = await db.collection('members')
+        .where('email', '==', input.toLowerCase())
+        .limit(1)
+        .get();
+      
+      if (!snapshot.empty) {
+        memberDoc = snapshot.docs[0];
+      }
+    } else {
+      // Search by member ID
+      const snapshot = await db.collection('members')
+        .where('memberId', '==', input.toUpperCase())
+        .limit(1)
+        .get();
+      
+      if (!snapshot.empty) {
+        memberDoc = snapshot.docs[0];
+      }
+    }
+    
+    if (!memberDoc) {
+      showNotif('Member not found. Please check your ID or email.', 'error');
+      return;
+    }
+    
+    const memberData = memberDoc.data();
+    currentMember = {
+      id: memberDoc.id,
+      ...memberData
+    };
+    
+    // Save session
+    if (document.getElementById('remember-me').checked) {
+      localStorage.setItem('evolve_member_id', memberDoc.id);
+      localStorage.setItem('evolve_remember', input);
+    }
+    
+    sessionStorage.setItem('evolve_session', memberDoc.id);
+    
+    // Log attendance
+    await logAttendance();
+    
+    // Show app
+    document.getElementById('login-screen').classList.remove('screen-visible');
+    document.getElementById('login-screen').classList.add('screen-hidden');
+    document.getElementById('app-shell').classList.remove('screen-hidden');
+    document.getElementById('app-shell').classList.add('screen-visible');
+    
+    await bootApp();
+    showNotif(`Welcome back, ${memberData.name || 'Member'}! 👋`, 'success');
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    showNotif('Login failed: ' + error.message, 'error');
+  } finally {
+    document.getElementById('login-btn-text').style.display = 'inline';
+    document.getElementById('login-spinner').style.display = 'none';
+  }
+}
+
+async function logout() {
+  try {
+    currentMember = null;
+    sessionStorage.removeItem('evolve_session');
+    if (!document.getElementById('remember-me').checked) {
+      localStorage.removeItem('evolve_member_id');
+      localStorage.removeItem('evolve_remember');
+    }
+    
+    document.getElementById('app-shell').classList.remove('screen-visible');
+    document.getElementById('app-shell').classList.add('screen-hidden');
+    document.getElementById('login-screen').classList.remove('screen-hidden');
+    document.getElementById('login-screen').classList.add('screen-visible');
+    
+    showNotif('Logged out successfully', 'info');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SESSION MANAGEMENT
+// ═══════════════════════════════════════════════════════════════
+async function resumeSession() {
+  const sessionId = sessionStorage.getItem('evolve_session') || 
+                    localStorage.getItem('evolve_member_id');
+  
+  if (!sessionId) return false;
+  
+  try {
+    const doc = await db.collection('members').doc(sessionId).get();
+    if (!doc.exists) return false;
+    
+    currentMember = {
+      id: doc.id,
+      ...doc.data()
+    };
+    
+    const remembered = localStorage.getItem('evolve_remember');
+    if (remembered) {
+      document.getElementById('login-input').value = remembered;
+      document.getElementById('remember-me').checked = true;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Session resume error:', error);
+    return false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APP INITIALIZATION
+// ═══════════════════════════════════════════════════════════════
+async function bootApp() {
+  try {
+    if (!currentMember) throw new Error('No member data');
+    
+    // Update UI with member data
+    document.getElementById('member-name-top').textContent = currentMember.name || 'Member';
+    document.getElementById('profile-name').textContent = currentMember.name || 'Member';
+    document.getElementById('profile-memberid').textContent = currentMember.memberId || '—';
+    document.getElementById('profile-email').textContent = currentMember.email || '—';
+    
+    // Set avatar
+    const initial = (currentMember.name || 'M').charAt(0).toUpperCase();
+    document.getElementById('profile-avatar').textContent = initial;
+    
+    // Set plan badge
+    const planBadge = document.getElementById('profile-plan');
+    if (currentMember.plan === 'monthly') {
+      planBadge.textContent = '💳 Monthly Member';
+      planBadge.className = 'plan-badge plan-monthly';
+    } else if (currentMember.plan === 'walk-in') {
+      planBadge.textContent = '🚶 Walk-in';
+      planBadge.className = 'plan-badge plan-walkin';
+    } else {
+      planBadge.textContent = '⚠️ Expired';
+      planBadge.className = 'plan-badge plan-expired';
+    }
+    
+    // Set join date
+    if (currentMember.joinDate) {
+      const date = currentMember.joinDate.toDate ? 
+        currentMember.joinDate.toDate() : 
+        new Date(currentMember.joinDate);
+      document.getElementById('profile-joindate').textContent = 
+        date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    
+    // Load stats
+    await loadMemberStats();
+    
+    // Render home tab
+    renderHomeTab();
+    
+  } catch (error) {
+    console.error('Boot error:', error);
+    showNotif('Failed to load member data', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ATTENDANCE LOGGING
+// ═══════════════════════════════════════════════════════════════
+async function logAttendance() {
+  if (!currentMember) return;
+  
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Check if already logged today
+    const existingLog = await db.collection('attendance')
+      .where('memberId', '==', currentMember.id)
+      .where('date', '>=', firebase.firestore.Timestamp.fromDate(today))
+      .limit(1)
+      .get();
+    
+    if (existingLog.empty) {
+      await db.collection('attendance').add({
+        memberId: currentMember.id,
+        memberName: currentMember.name,
+        date: firebase.firestore.Timestamp.now(),
+        loggedAt: firebase.firestore.Timestamp.now()
+      });
+      console.log('✅ Attendance logged');
+    }
+  } catch (error) {
+    console.error('Attendance logging error:', error);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATISTICS
+// ═══════════════════════════════════════════════════════════════
+async function loadMemberStats() {
+  if (!currentMember) return;
+  
+  try {
+    // Load attendance count
+    const attendanceSnap = await db.collection('attendance')
+      .where('memberId', '==', currentMember.id)
+      .get();
+    
+    document.getElementById('profile-visits').textContent = attendanceSnap.size;
+    
+    // Load workout count
+    const workoutSnap = await db.collection('workoutLogs')
+      .where('memberId', '==', currentMember.id)
+      .get();
+    
+    document.getElementById('profile-workouts').textContent = workoutSnap.size;
+    
+    // Calculate streak
+    const streak = await calculateStreak();
+    document.getElementById('profile-streak').textContent = streak;
+    
+  } catch (error) {
+    console.error('Stats loading error:', error);
+  }
+}
+
+async function calculateStreak() {
+  if (!currentMember) return 0;
+  
+  try {
+    const snap = await db.collection('attendance')
+      .where('memberId', '==', currentMember.id)
+      .orderBy('date', 'desc')
+      .limit(30)
+      .get();
+    
+    if (snap.empty) return 0;
+    
+    let streak = 0;
+    let lastDate = null;
+    
+    snap.docs.forEach(doc => {
+      const date = doc.data().date.toDate();
+      date.setHours(0, 0, 0, 0);
+      
+      if (!lastDate) {
+        lastDate = date;
+        streak = 1;
+      } else {
+        const diff = Math.floor((lastDate - date) / (1000 * 60 * 60 * 24));
+        if (diff === 1) {
+          streak++;
+          lastDate = date;
+        }
+      }
+    });
+    
+    return streak;
+  } catch (error) {
+    console.error('Streak calculation error:', error);
+    return 0;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOME TAB RENDERING
+// ═══════════════════════════════════════════════════════════════
+function renderHomeTab() {
+  const homeTab = document.getElementById('tab-home');
+  
+  homeTab.innerHTML = `
+    <!-- Welcome Card -->
+    <div style="background:linear-gradient(135deg,#1a1408,#0e0e0e);border:1px solid rgba(212,168,83,0.2);border-radius:16px;padding:20px;margin-bottom:16px;">
+      <h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">Welcome back! 👋</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,0.6);">Ready to crush your workout today?</p>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <button onclick="showTab('workouts')" style="background:#0e0e0e;border:1px solid rgba(212,168,83,0.2);border-radius:14px;padding:16px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:24px;">🏋️</div>
+        <div style="font-size:13px;font-weight:700;">Start Workout</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4);">Track your sets</div>
+      </button>
+      
+      <button onclick="showTab('profile')" style="background:#0e0e0e;border:1px solid rgba(96,165,250,0.2);border-radius:14px;padding:16px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:24px;">📊</div>
+        <div style="font-size:13px;font-weight:700;">Your Stats</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4);">View progress</div>
+      </button>
+    </div>
+    
+    <!-- Today's Stats -->
+    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;margin-bottom:16px;">
+      <h3 style="font-size:13px;font-weight:800;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);">Today</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:900;color:#d4a853;">0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">Workouts</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:900;color:#60a5fa;">0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">kg Lifted</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:900;color:#4ade80;">0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">Sets</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Motivation Quote -->
+    <div style="background:linear-gradient(135deg,#1a1408,#0e0e0e);border:1px solid rgba(212,168,83,0.2);border-radius:16px;padding:16px;">
+      <div style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;font-style:italic;margin-bottom:8px;">
+        "The only bad workout is the one that didn't happen."
+      </div>
+      <div style="font-size:11px;color:#d4a853;font-weight:700;">— Stay consistent 💪</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function showTab(tab) {
+  // Hide all tabs
+  ['home', 'workouts', 'profile', 'more'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.remove('active');
+    document.getElementById(`bnav-${t}`).classList.remove('active');
+  });
+  
+  // Show selected tab
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`bnav-${tab}`).classList.add('active');
+  currentTab = tab;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ONLINE/OFFLINE DETECTION
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('online', () => {
+  isOnline = true;
+  document.getElementById('online-status').className = 'w-2 h-2 rounded-full bg-green-500';
+  document.getElementById('offline-bar').style.display = 'none';
+  showNotif('Back online! ✅', 'success');
+});
+
+window.addEventListener('offline', () => {
+  isOnline = false;
+  document.getElementById('online-status').className = 'w-2 h-2 rounded-full bg-red-500';
+  document.getElementById('offline-bar').style.display = 'block';
+  showNotif('You are offline ⚠️', 'warning');
+});
+
+// ═══════════════════════════════════════════════════════════════
+// APP STARTUP
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('load', async () => {
+  console.log('🚀 Evolve Fitness App Starting...');
+  
+  try {
+    const hasSession = await resumeSession();
+    
+    if (hasSession) {
+      document.getElementById('app-shell').classList.remove('screen-hidden');
+      document.getElementById('app-shell').classList.add('screen-visible');
+      await bootApp();
+      await logAttendance();
+      console.log('✅ Session restored');
+    } else {
+      document.getElementById('login-screen').classList.remove('screen-hidden');
+      document.getElementById('login-screen').classList.add('screen-visible');
+      console.log('👤 Please log in');
+    }
+  } catch (error) {
+    console.error('❌ Startup error:', error);
+    showNotif('App initialization error', 'error');
+    document.getElementById('login-screen').classList.remove('screen-hidden');
+    document.getElementById('login-screen').classList.add('screen-visible');
+  }
+});
+
+// Handle Enter key on login
+document.addEventListener('DOMContentLoaded', () => {
+  const loginInput = document.getElementById('login-input');
+  if (loginInput) {
+    loginInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') login();
+    });
+  }
+});
+
+console.log('✅ Evolve Fitness App Loaded - All systems operational!');
+</script>
+
+</body>
+</html>
