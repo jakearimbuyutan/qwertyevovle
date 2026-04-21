@@ -1998,10 +1998,1715 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
   box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 168, 83, 0.1);
 }
 
-/* Premium tooltip styling */
-.tooltip-content{
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 168, 83, 0.1);
+/* ══════════════════════════════════════════════════
+   UI REDESIGN — EVOLVE FITNESS v2
+   ══════════════════════════════════════════════════ */
+
+/* ── GLOBAL UPGRADES ── */
+:root {
+  --gold:#d4a853; --gold2:#f0c060; --gold3:#e8bb6a;
+  --accent-green:#34d399; --accent-blue:#60a5fa;
+  --accent-purple:#a78bfa; --accent-red:#f87171;
+  --surface-raised:rgba(255,255,255,0.04);
+  --pill-bg:rgba(212,168,83,0.1);
 }
+
+/* Better body background — subtle radial warmth */
+body { background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(212,168,83,0.06) 0%, #060606 60%) !important; }
+
+/* ── LOGIN REDESIGN ── */
+.login-box {
+  background: linear-gradient(160deg, rgba(26,24,18,0.98) 0%, rgba(14,13,12,0.99) 100%) !important;
+  border: 1px solid rgba(212,168,83,0.2) !important;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,168,83,0.08), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+/* Input focus glow */
+#login-input:focus {
+  border-color: #d4a853 !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.12), 0 0 20px rgba(212,168,83,0.08) !important;
+  background: #181510 !important;
+}
+
+/* Sign in button — bolder shimmer */
+#login-btn {
+  background: linear-gradient(135deg,#f5d07a,#d4902a) !important;
+  box-shadow: 0 4px 20px rgba(212,168,83,0.35), inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  border-radius: 16px !important;
+  font-size: 17px !important;
+  letter-spacing: 0.03em !important;
+}
+#login-btn:active { transform: scale(0.97) !important; }
+
+/* Remember me toggle — larger and cleaner */
+#rm-track { border-radius: 12px !important; }
+#toggle-knob { width: 18px !important; height: 18px !important; top: 2px !important; left: 2px !important; }
+
+/* ── TOP BAR ── */
+#top-bar {
+  border-bottom: 1px solid rgba(212,168,83,0.12) !important;
+  background: rgba(6,6,6,0.97) !important;
+}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav {
+  border-top: 1px solid rgba(212,168,83,0.1) !important;
+  background: rgba(8,8,8,0.98) !important;
+}
+.bnav-btn { font-size: 9.5px !important; font-weight: 600 !important; letter-spacing: 0.04em !important; }
+.bnav-btn i { font-size: 20px !important; }
+.bnav-btn.active { color: #f0c060 !important; }
+.bnav-btn.active i { filter: drop-shadow(0 0 10px rgba(240,192,96,0.6)) !important; }
+
+/* ── HOME TAB CARDS — richer depth ── */
+.card, [class*="fb-"] {
+  box-shadow: 0 2px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.card:hover { transform: translateY(-1px) !important; }
+
+/* FB section headers — more visible */
+.fb-section-header {
+  padding: 10px 0 6px !important;
+}
+.fb-section-title {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.09em !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* FB Enable button — pill style */
+.fb-enable-btn {
+  background: rgba(212,168,83,0.12) !important;
+  border: 1px solid rgba(212,168,83,0.3) !important;
+  color: #d4a853 !important;
+  border-radius: 20px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 5px 14px !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* Quick action buttons on Home */
+.quick-action-btn, [onclick*="showTab"] {
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+/* ── WORKOUT TAB ── */
+/* Exercise list items */
+.list-item {
+  border-left: 3px solid transparent !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+.list-item:hover { border-left-color: var(--gold) !important; }
+
+/* Set inputs — clearer borders */
+.hevy-set-input, .set-input {
+  border: 1.5px solid rgba(255,255,255,0.12) !important;
+  border-radius: 10px !important;
+  background: rgba(0,0,0,0.3) !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+.hevy-set-input:focus, .set-input:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.15) !important;
+  background: rgba(212,168,83,0.05) !important;
+}
+
+/* Done checkmark buttons */
+.set-done-btn {
+  border-radius: 50% !important;
+  border: 2px solid rgba(255,255,255,0.15) !important;
+  transition: all 0.2s !important;
+}
+.set-done-btn.done {
+  background: rgba(52,211,153,0.15) !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 12px rgba(52,211,153,0.3) !important;
+}
+
+/* ── MEALS TAB ── */
+.macro-pill {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* ── MODALS & SHEETS ── */
+.bottom-sheet, .modal-content, .sheet-content {
+  border-radius: 28px 28px 0 0 !important;
+  border-top: 1px solid rgba(255,255,255,0.09) !important;
+  box-shadow: 0 -12px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+.sheet-handle {
+  width: 40px !important; height: 4px !important;
+  border-radius: 2px !important;
+  background: rgba(255,255,255,0.15) !important;
+}
+
+/* ── BUTTONS — global upgrade ── */
+.btn-gold {
+  box-shadow: 0 4px 18px rgba(212,168,83,0.3), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+}
+.btn-gold:active { transform: scale(0.96) !important; }
+
+/* ── STAT PILLS / BADGES ── */
+.stat-pill {
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border-radius: 10px !important;
+}
+
+/* ── NOTIFICATION TOAST ── */
+.notif-toast {
+  border-radius: 16px !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+
+/* ── SECTION DIVIDERS — cleaner ── */
+.section-divider {
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent) !important;
+  border: none !important;
+  margin: 12px 0 !important;
+}
+
+/* ── INPUT FIELDS — universal upgrade ── */
+.input-dark, input[type="text"], input[type="number"], input[type="email"], input[type="time"] {
+  border-radius: 12px !important;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s !important;
+}
+.input-dark:focus, input[type="text"]:focus, input[type="number"]:focus {
+  border-color: rgba(212,168,83,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.1) !important;
+}
+
+/* ── PROGRESS BARS — more vivid ── */
+#steps-bar {
+  background: linear-gradient(90deg, #34d399, #22d3ee) !important;
+  box-shadow: 0 0 8px rgba(52,211,153,0.3) !important;
+}
+#steps-ring { filter: drop-shadow(0 0 4px rgba(52,211,153,0.4)); }
+
+/* ── PROFILE / MORE TAB TILES ── */
+.more-tile {
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  background: rgba(255,255,255,0.03) !important;
+  border-radius: 16px !important;
+  transition: all 0.25s !important;
+}
+.more-tile:hover { background: rgba(255,255,255,0.06) !important; border-color: rgba(212,168,83,0.2) !important; }
+
+/* ── QR CODE CARD ── */
+#qr-display {
+  border: 1px solid rgba(212,168,83,0.2) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 50px rgba(212,168,83,0.15) !important;
+}
+
+/* ── PLAN BADGE COLOURS ── */
+.plan-monthly { background: linear-gradient(135deg,rgba(212,168,83,0.15),rgba(212,168,83,0.08)) !important; border-color: rgba(212,168,83,0.35) !important; }
+.plan-walkin  { background: linear-gradient(135deg,rgba(96,165,250,0.15),rgba(96,165,250,0.08)) !important; border-color: rgba(96,165,250,0.35) !important; }
+.plan-expired { background: linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.08)) !important; border-color: rgba(239,68,68,0.35) !important; }
+
+/* ── ANNOUNCEMENTS ── */
+.ann-card { border-left: 3px solid var(--gold) !important; border-radius: 14px !important; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px !important; }
+::-webkit-scrollbar-thumb { background: rgba(212,168,83,0.25) !important; border-radius: 3px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+
+/* ── TAB TRANSITIONS ── */
+.tab-section.active { animation: tabRevealV2 0.4s cubic-bezier(0.16,1,0.3,1) both !important; }
+@keyframes tabRevealV2 {
+  from { opacity: 0; transform: translateY(10px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0)  scale(1);    }
+}
+
+/* ── HOME GREETING CARD ── */
+#home-greeting-card, [id*="greeting"] {
+  background: linear-gradient(135deg,rgba(22,20,14,0.95),rgba(14,13,10,0.98)) !important;
+  border: 1px solid rgba(212,168,83,0.18) !important;
+}
+
+/* ── WATER / HYDRATION COLOURS ── */
+#water-bar, [id*="water-fill"] {
+  background: linear-gradient(90deg, #38bdf8, #60a5fa) !important;
+  box-shadow: 0 0 8px rgba(96,165,250,0.3) !important;
+}
+
+/* ── MACRO COLOURS ── */
+[id*="protein-bar"], [id*="prot-bar"] { background: linear-gradient(90deg,#f87171,#fb923c) !important; }
+[id*="carbs-bar"],   [id*="carb-bar"] { background: linear-gradient(90deg,#60a5fa,#818cf8) !important; }
+[id*="fat-bar"]                        { background: linear-gradient(90deg,#fbbf24,#f59e0b) !important; }
+[id*="cal-bar"]                        { background: linear-gradient(90deg,#d4a853,#f0c060) !important; }
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  EVOLVE FITNESS — AESTHETIC OVERHAUL                                    ║
+   ║  Luxury dark theme: cinematic depth, refined gold, motion poetry        ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+/* ── IMPORT: Playfair for elegant accents ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ── REFINED ROOT PALETTE ── */
+:root {
+  --gold-vivid: #f0c060;
+  --gold-warm: #d4a853;
+  --gold-deep: #a87830;
+  --gold-pale: #fde8a8;
+  --obsidian: #030208;
+  --ink: #07070e;
+  --slate: #0d0c14;
+  --shadow-deep: 0 32px 80px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
+  --glow-gold-sm: 0 0 20px rgba(212,168,83,0.2);
+  --glow-gold-md: 0 0 40px rgba(212,168,83,0.3);
+}
+
+/* ── BODY: Deeper noir atmosphere ── */
+html, body { background: var(--obsidian) !important; }
+
+/* ── AMBIENT: Cinematic multi-layer background ── */
+#ambient {
+  background:
+    radial-gradient(ellipse 100% 55% at 50% -5%, rgba(180,130,50,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 40% at 85% 95%, rgba(120,80,20,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 15% 85%, rgba(80,50,10,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(212,168,83,0.015) 0%, transparent 100%),
+    var(--obsidian) !important;
+}
+#ambient::before {
+  content: '' !important;
+  position: absolute !important;
+  width: 900px !important; height: 900px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(212,168,83,0.07) 0%, rgba(212,168,83,0.02) 35%, transparent 70%) !important;
+  top: -400px !important; left: 50% !important;
+  transform: translateX(-50%) !important;
+  filter: blur(40px) !important;
+  animation: cineOrb 14s ease-in-out infinite !important;
+}
+#ambient::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 500px !important; height: 500px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(100,70,20,0.06) 0%, transparent 65%) !important;
+  bottom: -80px !important; right: -60px !important;
+  filter: blur(60px) !important;
+  animation: cineOrb2 18s ease-in-out infinite !important;
+}
+@keyframes cineOrb {
+  0%,100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateX(-50%) translateY(25px) scale(1.08); opacity: 1; }
+}
+@keyframes cineOrb2 {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.1); }
+}
+
+/* ── TOP BAR: Ultra-refined glass ── */
+#top-bar {
+  background: rgba(3,2,8,0.96) !important;
+  border-bottom: 1px solid rgba(212,168,83,0.12) !important;
+  box-shadow: 0 1px 0 rgba(212,168,83,0.06), 0 8px 32px rgba(0,0,0,0.5) !important;
+  backdrop-filter: blur(40px) saturate(250%) !important;
+  height: 60px !important;
+}
+
+/* ── BOTTOM NAV: Refined glass architecture ── */
+#bottom-nav {
+  background: rgba(3,2,8,0.97) !important;
+  border-top: 1px solid rgba(212,168,83,0.1) !important;
+  box-shadow: 0 -2px 0 rgba(212,168,83,0.05), 0 -12px 40px rgba(0,0,0,0.6) !important;
+  backdrop-filter: blur(40px) saturate(250%) !important;
+}
+.bnav-btn {
+  position: relative !important;
+  padding: 10px 4px 8px !important;
+  transition: color 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.bnav-btn i {
+  font-size: 20px !important;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s, color 0.3s !important;
+}
+.bnav-btn.active i {
+  transform: translateY(-4px) scale(1.2) !important;
+  filter: drop-shadow(0 0 8px rgba(212,168,83,0.7)) !important;
+  color: #f5cb6e !important;
+}
+.bnav-btn.active {
+  color: #f5cb6e !important;
+}
+.bnav-btn.active::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 6px !important; left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 36px !important; height: 36px !important;
+  border-radius: 12px !important;
+  background: rgba(212,168,83,0.1) !important;
+  border: 1px solid rgba(212,168,83,0.15) !important;
+  z-index: -1 !important;
+  animation: navHalo 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+}
+@keyframes navHalo {
+  from { opacity: 0; transform: translateX(-50%) scale(0.7); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* ── LOGIN SCREEN: Dramatic cinematic entrance ── */
+#login-screen {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,130,50,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(100,70,20,0.08) 0%, transparent 55%),
+    var(--obsidian) !important;
+  overflow: hidden !important;
+}
+#login-screen::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,168,83,0.07) 0%, transparent 70%);
+  top: -250px; left: 50%; transform: translateX(-50%);
+  filter: blur(50px);
+  animation: loginAmbient 10s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes loginAmbient {
+  0%,100% { transform: translateX(-50%) scale(1) translateY(0); }
+  50% { transform: translateX(-50%) scale(1.1) translateY(20px); }
+}
+.login-box {
+  background: linear-gradient(160deg, rgba(16,14,22,0.98) 0%, rgba(9,8,14,0.99) 100%) !important;
+  border: 1px solid rgba(212,168,83,0.18) !important;
+  border-radius: 30px !important;
+  padding: 44px 32px 40px !important;
+  box-shadow:
+    0 32px 80px rgba(0,0,0,0.8),
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 0 60px rgba(212,168,83,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -1px 0 rgba(212,168,83,0.04) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.login-box::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(212,168,83,0.4), rgba(240,192,96,0.6), rgba(212,168,83,0.4), transparent) !important;
+}
+.login-box::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -120px !important; left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 320px !important; height: 240px !important;
+  background: radial-gradient(ellipse, rgba(212,168,83,0.1) 0%, transparent 70%) !important;
+  pointer-events: none !important;
+  filter: blur(20px) !important;
+}
+/* Login logo glow enhancement */
+.login-box > div:first-child {
+  filter: drop-shadow(0 0 20px rgba(212,168,83,0.5)) !important;
+}
+/* Login title gradient text */
+.login-box [style*="EVOLVE FITNESS"] {
+  background: linear-gradient(135deg, #fde8a8 0%, #f0c060 30%, #d4a853 60%, #fde8a8 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-size: 26px !important;
+  letter-spacing: 0.14em !important;
+}
+
+/* ── CARDS: Obsidian glass with micro-shimmer ── */
+.card {
+  background: linear-gradient(145deg, rgba(16,14,22,0.95), rgba(10,9,16,0.98)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1) !important;
+  position: relative !important;
+}
+.card::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  opacity: 0 !important;
+  transition: opacity 0.35s !important;
+  background: linear-gradient(145deg, rgba(212,168,83,0.05), transparent 60%) !important;
+  pointer-events: none !important;
+}
+.card:hover::before { opacity: 1 !important; }
+.card:hover {
+  border-color: rgba(212,168,83,0.2) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), var(--glow-gold-sm), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  transform: translateY(-2px) !important;
+}
+.card-gold, .card-premium {
+  background: linear-gradient(145deg, rgba(20,17,10,0.97), rgba(12,10,6,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.2) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.55), var(--glow-gold-sm), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+/* ── GOLD BUTTON: Supreme ── */
+.btn-gold, .btn-glow, .hevy-finish-btn, .wc-start-btn {
+  background: linear-gradient(135deg, #fde8a8 0%, #f0c060 25%, #d4a853 65%, #a87830 100%) !important;
+  border-radius: 16px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.03em !important;
+  box-shadow: 0 6px 24px rgba(212,168,83,0.35), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.2) !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.btn-gold::after, .btn-glow::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: -100% !important;
+  width: 70% !important; height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent) !important;
+  transform: skewX(-15deg) !important;
+  transition: left 0.6s ease !important;
+}
+.btn-gold:hover::after, .btn-glow:hover::after { left: 150% !important; }
+.btn-gold:hover, .btn-glow:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 40px rgba(212,168,83,0.5), inset 0 1px 0 rgba(255,255,255,0.35) !important;
+}
+.btn-gold:active { transform: scale(0.97) translateY(0) !important; filter: brightness(0.9) !important; }
+
+/* ── INPUTS: Dark crystal ── */
+.input-dark {
+  background: rgba(10,8,18,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.09) !important;
+  border-radius: 14px !important;
+  padding: 15px 18px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: rgba(255,255,255,0.95) !important;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+.input-dark:focus {
+  border-color: rgba(212,168,83,0.7) !important;
+  background: rgba(12,10,20,0.97) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.12), inset 0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(212,168,83,0.1) !important;
+  outline: none !important;
+}
+
+/* ── FB HERO: Richer gradient ── */
+.fb-hero {
+  background: linear-gradient(180deg, rgba(14,12,20,0.99) 0%, rgba(8,7,14,0.99) 100%) !important;
+  border-bottom: 1px solid rgba(212,168,83,0.06) !important;
+  position: relative !important;
+}
+.fb-hero::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(212,168,83,0.3), transparent) !important;
+}
+.fb-hero-line { display: none !important; }
+
+/* ── GREETING TEXT ── */
+.fb-greeting-sub {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  color: rgba(212,168,83,0.5) !important;
+  text-transform: uppercase !important;
+  font-family: 'DM Mono', monospace !important;
+}
+.fb-greeting-name {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.75) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* ── CATEGORY BUTTONS ── */
+.fb-cat-btn {
+  background: rgba(12,10,18,0.9) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  padding: 14px 6px !important;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.fb-cat-btn:hover {
+  border-color: rgba(212,168,83,0.2) !important;
+  background: rgba(20,16,28,0.95) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), var(--glow-gold-sm) !important;
+}
+.fb-cat-btn:active { transform: scale(0.95) !important; }
+.fb-cat-icon {
+  border-radius: 14px !important;
+  width: 46px !important; height: 46px !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  margin: 0 auto 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.fb-cat-btn:hover .fb-cat-icon {
+  transform: scale(1.12) !important;
+}
+.fb-cat-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* ── STAT CARDS ── */
+.fb-stat-card {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,15,0.99)) !important;
+  border-radius: 16px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.fb-stat-num {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+.fb-stat-label {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.3) !important;
+}
+
+/* ── THIS WEEK CARD ── */
+.fb-this-week-card {
+  background: linear-gradient(145deg, rgba(14,12,20,0.98), rgba(10,9,16,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.fb-week-num {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+.fb-week-label {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.3) !important;
+}
+.fb-week-divider { background: rgba(255,255,255,0.05) !important; }
+
+/* ── CHALLENGE BANNER ── */
+.fb-challenge-banner {
+  background: linear-gradient(135deg, rgba(18,14,8,0.98), rgba(12,10,6,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.22) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), var(--glow-gold-sm) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.fb-challenge-banner::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(240,192,96,0.5), transparent) !important;
+}
+.fb-challenge-cta {
+  background: linear-gradient(135deg, #f0c060, #c9922e) !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.3), inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.fb-challenge-cta:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(212,168,83,0.4) !important;
+}
+
+/* ── WORKOUT CARDS (horizontal scroll) ── */
+.fb-workout-card {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+  overflow: hidden !important;
+}
+.fb-workout-card:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.55) !important;
+  border-color: rgba(212,168,83,0.15) !important;
+}
+.fb-workout-card-badge {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 9px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+.fb-workout-card-name {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ── SECTION HEADERS ── */
+.fb-section-title {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+  color: rgba(255,255,255,0.92) !important;
+}
+.fb-see-all {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--gold-warm) !important;
+  background: rgba(212,168,83,0.08) !important;
+  border: 1px solid rgba(212,168,83,0.15) !important;
+  border-radius: 8px !important;
+  padding: 4px 10px !important;
+  transition: all 0.2s !important;
+}
+.fb-see-all:hover { background: rgba(212,168,83,0.15) !important; }
+
+/* ── PEDOMETER CARD ── */
+#steps-count {
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 200 !important;
+  letter-spacing: -3px !important;
+}
+
+/* ── MODAL SHEETS ── */
+.bottom-sheet {
+  background: linear-gradient(180deg, rgba(16,14,22,0.99) 0%, rgba(9,8,14,0.99) 100%) !important;
+  border: 1px solid rgba(212,168,83,0.12) !important;
+  border-bottom: none !important;
+  border-radius: 28px 28px 0 0 !important;
+  box-shadow: 0 -16px 60px rgba(0,0,0,0.7) !important;
+}
+.sheet-handle {
+  background: rgba(212,168,83,0.25) !important;
+  width: 44px !important; height: 4px !important;
+  border-radius: 4px !important;
+}
+
+/* ── STAT PILL (PROFILE) ── */
+.stat-pill {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,15,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* ── LEADERBOARD ROWS ── */
+.lb-row {
+  background: rgba(12,10,18,0.8) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 16px !important;
+  transition: all 0.25s !important;
+}
+.lb-row:hover {
+  background: rgba(18,15,26,0.9) !important;
+  border-color: rgba(212,168,83,0.12) !important;
+}
+.lb-row.lb-me {
+  background: linear-gradient(135deg, rgba(30,22,10,0.9), rgba(20,15,6,0.95)) !important;
+  border-color: rgba(212,168,83,0.3) !important;
+  box-shadow: 0 0 30px rgba(212,168,83,0.1) !important;
+}
+.rank-1 { filter: drop-shadow(0 0 12px rgba(212,168,83,0.8)) !important; }
+
+/* ── ATTENDANCE ITEMS ── */
+.att-dot {
+  width: 8px !important; height: 8px !important;
+  background: #4ade80 !important;
+  box-shadow: 0 0 12px rgba(74,222,128,0.6), 0 0 4px rgba(74,222,128,0.4) !important;
+}
+
+/* ── ANNOUNCEMENT CARDS ── */
+.ann-card {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,14,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 18px !important;
+}
+.ann-card.pinned {
+  border-color: rgba(212,168,83,0.2) !important;
+  box-shadow: 0 0 24px rgba(212,168,83,0.06) !important;
+}
+
+/* ── INNER TABS ── */
+.inner-tabs {
+  background: rgba(8,7,14,0.95) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 14px !important;
+  padding: 4px !important;
+}
+.inner-tab.active {
+  background: linear-gradient(135deg, rgba(212,168,83,0.2), rgba(212,168,83,0.1)) !important;
+  color: #f0c060 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 12px rgba(212,168,83,0.15), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+/* ── WORKOUT TAB INNER TABS (pill style) ── */
+#tab-workouts .inner-tab.active {
+  background: linear-gradient(135deg, #f0c060, #c9922e) !important;
+  color: #000 !important;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.3), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+
+/* ── HEVY WORKOUT CARDS ── */
+.hevy-ex-card {
+  background: rgba(8,7,12,0.98) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+.hevy-ex-card::before { transition: opacity 0.3s !important; }
+.hevy-ex-icon {
+  background: rgba(212,168,83,0.1) !important;
+  border: 1px solid rgba(212,168,83,0.18) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 12px rgba(212,168,83,0.08) !important;
+}
+.hevy-ex-name {
+  font-family: 'Syne', sans-serif !important;
+  color: #f0c060 !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+.hevy-ex-name:hover { text-shadow: 0 0 15px rgba(240,192,96,0.4) !important; }
+.hevy-set-input {
+  background: rgba(10,9,16,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  transition: all 0.2s !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+.hevy-set-input:focus {
+  border-color: rgba(212,168,83,0.6) !important;
+  background: rgba(14,12,20,0.97) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.1), inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+.hevy-check-btn {
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+.hevy-check-btn.done {
+  background: linear-gradient(135deg, rgba(74,222,128,0.2), rgba(74,222,128,0.1)) !important;
+  border-color: rgba(74,222,128,0.5) !important;
+  box-shadow: 0 0 16px rgba(74,222,128,0.3) !important;
+}
+
+/* ── CHAT BUBBLES ── */
+.bubble.mine {
+  background: linear-gradient(135deg, #f5cb6e, #d4922a) !important;
+  color: rgba(0,0,0,0.9) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(212,168,83,0.25) !important;
+}
+.bubble.theirs {
+  background: rgba(16,14,24,0.98) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+.chat-send {
+  background: linear-gradient(135deg, #f0c060, #c9922e) !important;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.3) !important;
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.chat-send:hover { transform: scale(1.08) !important; box-shadow: 0 6px 20px rgba(212,168,83,0.4) !important; }
+
+/* ── NOTIF BELL ── */
+#notif-bell-btn {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s !important;
+}
+#notif-bell-btn:hover {
+  background: rgba(212,168,83,0.1) !important;
+  border-color: rgba(212,168,83,0.3) !important;
+  color: #f0c060 !important;
+}
+
+/* ── PLAN BADGES ── */
+.plan-monthly {
+  background: linear-gradient(135deg, rgba(212,168,83,0.15), rgba(212,168,83,0.06)) !important;
+  color: #f0c060 !important;
+  border: 1px solid rgba(212,168,83,0.3) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 8px !important;
+}
+.plan-walkin {
+  background: linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.06)) !important;
+  border: 1px solid rgba(96,165,250,0.3) !important;
+}
+.plan-expired {
+  background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.06)) !important;
+  border: 1px solid rgba(248,113,113,0.3) !important;
+}
+
+/* ── PAYMENT OPTIONS ── */
+.pay-option {
+  background: rgba(12,10,18,0.9) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.pay-option:hover { border-color: rgba(212,168,83,0.2) !important; transform: translateY(-2px) !important; }
+.pay-option.selected {
+  background: linear-gradient(135deg, rgba(20,16,8,0.95), rgba(14,12,6,0.98)) !important;
+  border-color: rgba(212,168,83,0.4) !important;
+  box-shadow: 0 0 30px rgba(212,168,83,0.12) !important;
+}
+
+/* ── SCROLLBAR: Gold ── */
+::-webkit-scrollbar { width: 2px !important; }
+::-webkit-scrollbar-thumb { background: rgba(212,168,83,0.3) !important; border-radius: 2px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+
+/* ── NOTIFICATIONS ── */
+.notif {
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+}
+.notif-success {
+  background: linear-gradient(135deg, rgba(74,222,128,0.15), rgba(74,222,128,0.05)) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(74,222,128,0.12) !important;
+}
+.notif-gold {
+  background: linear-gradient(135deg, rgba(212,168,83,0.18), rgba(212,168,83,0.06)) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(212,168,83,0.12) !important;
+}
+
+/* ── MORE TILES ── */
+.more-tile {
+  background: rgba(12,10,18,0.9) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 18px !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.more-tile:hover {
+  background: rgba(18,15,26,0.95) !important;
+  border-color: rgba(212,168,83,0.18) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+}
+
+/* ── PROFILE HERO ── */
+.profile-hero {
+  background: linear-gradient(160deg, rgba(14,12,20,0.98), rgba(9,8,14,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+}
+.member-avatar, .avatar-placeholder {
+  border: 2px solid rgba(212,168,83,0.5) !important;
+  box-shadow: 0 0 20px rgba(212,168,83,0.2) !important;
+}
+.avatar-placeholder { color: #f0c060 !important; }
+
+/* ── TAB TRANSITION (more cinematic) ── */
+.tab-section.active {
+  animation: cinematicReveal 0.45s cubic-bezier(0.16,1,0.3,1) both !important;
+}
+@keyframes cinematicReveal {
+  from { opacity: 0; transform: translateY(14px) scale(0.99) blur(4px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+}
+
+/* ── QR DISPLAY ── */
+#qr-display {
+  border: 1px solid rgba(212,168,83,0.25) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 0 60px rgba(212,168,83,0.2), 0 16px 48px rgba(0,0,0,0.5) !important;
+}
+
+/* ── ACTIVITY PANEL ── */
+#activity-panel {
+  background: linear-gradient(180deg, rgba(16,14,22,0.99) 0%, rgba(10,9,16,0.99) 100%) !important;
+  border: 1px solid rgba(212,168,83,0.15) !important;
+  border-radius: 0 0 24px 24px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+}
+.activity-item:hover { background: rgba(255,255,255,0.025) !important; }
+
+/* ── SECTION TITLE DIVIDER ── */
+.section-title::after {
+  background: linear-gradient(90deg, rgba(212,168,83,0.25), transparent) !important;
+}
+
+/* ── FB REMINDERS & QUOTE CARDS ── */
+.fb-reminders-card, .fb-achievements-card, .fb-card-padded {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,14,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 20px !important;
+}
+.fb-quote-card {
+  background: linear-gradient(135deg, rgba(20,15,8,0.98), rgba(12,10,16,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.2) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), var(--glow-gold-sm) !important;
+}
+
+/* ── OVERALL GLOW PULSE: Smoother ── */
+@keyframes goldPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(212,168,83,0.2); }
+  50% { box-shadow: 0 0 40px rgba(212,168,83,0.45), 0 0 70px rgba(212,168,83,0.15); }
+}
+
+/* ── SPINNER ── */
+.spinner, .spinner-premium {
+  border-color: rgba(212,168,83,0.15) !important;
+  border-top-color: #f0c060 !important;
+}
+
+/* ── TYPOGRAPHY POLISH ── */
+h1, h2, h3, .font-oswald, .hevy-log-title, .hevy-ex-name, .stat-num, .profile-name {
+  font-family: 'Syne', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* ── HEVY HEADER/STATS BAR ── */
+.hevy-header {
+  background: rgba(5,4,10,0.98) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+.hevy-stats-bar {
+  background: rgba(7,6,13,0.98) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+.hevy-finish-btn {
+  border-radius: 14px !important;
+  font-family: 'Syne', sans-serif !important;
+  font-size: 14px !important;
+}
+
+/* ── HEVY ADD SET BUTTON ── */
+.hevy-add-set-btn {
+  background: rgba(7,6,13,0.99) !important;
+  border-top: 1px solid rgba(255,255,255,0.04) !important;
+  color: rgba(255,255,255,0.45) !important;
+  letter-spacing: 0.05em !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: all 0.2s !important;
+}
+.hevy-add-set-btn:hover {
+  background: rgba(12,10,20,0.99) !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* ── EXERCISE CONTEXT MENU ── */
+.ex-ctx-menu {
+  background: linear-gradient(180deg, rgba(18,16,26,0.99) 0%, rgba(12,10,20,0.99) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+}
+
+/* ── PR CELEBRATION ── */
+.pr-medal-icon { filter: drop-shadow(0 0 24px rgba(212,168,83,0.7)) !important; }
+.pr-exercise { color: #f0c060 !important; }
+
+/* ── PROFILE SETUP BANNER ── */
+#profile-setup-banner {
+  background: linear-gradient(135deg, rgba(22,18,8,0.97), rgba(14,12,8,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.3) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), var(--glow-gold-sm) !important;
+}
+#profile-setup-bar { background: linear-gradient(90deg, #d4a853, #f0c060) !important; }
+
+/* ── FB INPUTS ── */
+.fb-number-input, .fb-select {
+  background: rgba(10,8,16,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.09) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+.fb-number-input:focus, .fb-select:focus {
+  border-color: rgba(212,168,83,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.1), inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+
+/* ── WATER BAR ── */
+#water-bar, [id*="water-fill"] {
+  background: linear-gradient(90deg, #38bdf8, #60a5fa) !important;
+  box-shadow: 0 0 12px rgba(96,165,250,0.4) !important;
+}
+
+/* ╔═══════════════════════════════════════════════════════════════════
+   ║  WAVE 2 — Deep Inner Pages, Sub-navs, Stats, Charts, Modals
+   ╚═══════════════════════════════════════════════════════════════════ */
+
+/* ── MORE TAB SUB-NAV: refined underline pills ── */
+#tab-more > div:first-child,
+#tab-home > div[style*="sticky"],
+[style*="sticky"][style*="overflow-x:auto"] {
+  background: rgba(3,2,8,0.97) !important;
+  border-bottom: 1px solid rgba(212,168,83,0.08) !important;
+  backdrop-filter: blur(24px) !important;
+}
+#more-lb-tab, #more-att-tab, #more-ann-tab, #more-contact-tab, #more-badges-tab,
+#mtab-diary, #mtab-macros, #mtab-history, #mtab-water,
+#wtab-log, #wtab-routines, #wtab-history, #wtab-stats {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+  transition: color 0.2s, border-color 0.2s !important;
+  padding: 14px 12px !important;
+  position: relative !important;
+}
+
+/* ── STAT GRID CARDS (workouts/stats page inline cards) ── */
+[style*="background:#0e0e0e"][style*="border-radius:14px"],
+[style*="background:#0e0e0e"][style*="border-radius:16px"],
+[style*="background:#0e0e0e"][style*="border-radius:18px"] {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,14,0.99)) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+/* ── WORKOUT STATS NUMBERS ── */
+#stat-streak, #stat-total-workouts, #stat-vol-week {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 30px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+#stat-streak { text-shadow: 0 0 20px rgba(240,192,96,0.4) !important; }
+#stat-total-workouts { text-shadow: 0 0 20px rgba(96,165,250,0.4) !important; }
+#stat-vol-week { text-shadow: 0 0 20px rgba(74,222,128,0.4) !important; }
+
+/* ── 1RM CALCULATOR ── */
+#orm-result {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 42px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  background: linear-gradient(135deg, #fde8a8, #d4a853) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+#orm-weight, #orm-reps {
+  background: rgba(10,8,16,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.09) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+  transition: border-color 0.2s !important;
+}
+
+/* ── LEADERBOARD TAB SWITCHER ── */
+#lb-visits-tab, #lb-volume-tab, #lb-streak-tab {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 800 !important;
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+  border-radius: 10px !important;
+}
+#lb-visits-tab[style*="background:#d4a853"],
+#lb-volume-tab[style*="background:#d4a853"],
+#lb-streak-tab[style*="background:#d4a853"] {
+  background: linear-gradient(135deg, #f0c060, #c9922e) !important;
+  box-shadow: 0 4px 14px rgba(212,168,83,0.3) !important;
+}
+
+/* ── REFERRAL CARD ── */
+[style*="background:linear-gradient(135deg,#0a1a10"] {
+  background: linear-gradient(145deg, rgba(8,20,14,0.98), rgba(5,12,8,0.99)) !important;
+  border: 1px solid rgba(45,212,160,0.22) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 24px rgba(45,212,160,0.06) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+[style*="background:linear-gradient(135deg,#0a1a10"]::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(45,212,160,0.4), transparent) !important;
+}
+#referral-code-display {
+  font-size: 22px !important;
+  letter-spacing: 0.18em !important;
+  color: #2dd4a0 !important;
+  text-shadow: 0 0 16px rgba(45,212,160,0.5) !important;
+}
+
+/* ── PROFILE SETUP MODAL ── */
+#profile-setup-modal > div {
+  background: rgba(5,4,10,0.99) !important;
+}
+#profile-setup-modal > div > div:first-child {
+  background: rgba(7,6,14,0.98) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+}
+/* Profile calc preview card */
+#ps-preview {
+  background: linear-gradient(135deg, rgba(22,17,8,0.97), rgba(12,10,16,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.28) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 30px rgba(212,168,83,0.08) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+#ps-preview::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(212,168,83,0.5), transparent) !important;
+}
+#ps-calc-cal {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 900 !important;
+  text-shadow: 0 0 20px rgba(212,168,83,0.4) !important;
+}
+#ps-calc-protein { font-family: 'Syne', sans-serif !important; font-size: 28px !important; font-weight: 900 !important; }
+#ps-calc-carbs   { font-family: 'Syne', sans-serif !important; font-size: 28px !important; font-weight: 900 !important; }
+#ps-calc-fat     { font-family: 'Syne', sans-serif !important; font-size: 28px !important; font-weight: 900 !important; }
+
+/* Activity + goal picker buttons */
+[onclick*="selectActivity"], [onclick*="selectGoal"] {
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+  border-radius: 14px !important;
+}
+[onclick*="selectActivity"]:hover, [onclick*="selectGoal"]:hover {
+  background: rgba(255,255,255,0.04) !important;
+  transform: translateX(4px) !important;
+}
+
+/* ── CHART CONTAINERS ── */
+[style*="id=\"volume-bar-chart\""], #volume-bar-chart,
+canvas { filter: contrast(1.05) !important; }
+
+/* ── ACTIVITY HEATMAP GRID CELLS ── */
+#activity-grid > div > div {
+  border-radius: 5px !important;
+  transition: transform 0.15s !important;
+}
+#activity-grid > div > div:hover { transform: scale(1.3) !important; }
+
+/* ── BADGES XP BAR ── */
+#badges-xp-bar {
+  background: linear-gradient(90deg, #c9922e, #f0c060, #fde8a8) !important;
+  box-shadow: 0 0 12px rgba(212,168,83,0.4) !important;
+  border-radius: 8px !important;
+}
+
+/* ── SHARE WORKOUT CARD ── */
+[style*="background:linear-gradient(135deg,#1a1a10"] {
+  background: linear-gradient(145deg, rgba(20,18,8,0.98), rgba(12,10,6,0.99)) !important;
+  border: 1px solid rgba(212,168,83,0.22) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(212,168,83,0.05) !important;
+}
+
+/* ── HEVY WORKOUT LOG HEADER ── */
+.hevy-log-title {
+  font-size: 18px !important;
+  letter-spacing: -0.01em !important;
+  background: linear-gradient(135deg, #fff, rgba(255,255,255,0.8)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.hevy-stat-val.blue { color: #f0c060 !important; text-shadow: 0 0 10px rgba(240,192,96,0.3) !important; }
+.hevy-stat-label { letter-spacing: 0.08em !important; color: rgba(255,255,255,0.32) !important; }
+
+/* ── HEVY BACK BUTTON ── */
+.hevy-back-btn { transition: opacity 0.2s, transform 0.2s !important; }
+.hevy-back-btn:hover { opacity: 0.7 !important; transform: translateX(-3px) !important; }
+
+/* ── WORKOUT CARD BUBBLE (Chat) ── */
+.workout-card-bubble {
+  background: linear-gradient(145deg, rgba(14,12,20,0.97), rgba(9,8,14,0.99)) !important;
+  border: 1.5px solid rgba(212,168,83,0.2) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
+.workout-card-bubble::before {
+  background: linear-gradient(90deg, transparent, rgba(240,192,96,0.4), transparent) !important;
+}
+
+/* ── EXERCISE CATEGORY CHIPS ── */
+.superset-letter {
+  background: rgba(212,168,83,0.2) !important;
+  color: #f0c060 !important;
+  border-radius: 6px !important;
+  font-family: 'DM Mono', monospace !important;
+}
+
+/* ── EMPTY STATES ── */
+.empty-state {
+  padding: 60px 24px !important;
+}
+.empty-state i {
+  filter: drop-shadow(0 0 12px rgba(212,168,83,0.15)) !important;
+  color: rgba(212,168,83,0.3) !important;
+}
+
+/* ── REST TIMER ── */
+.hevy-rest-timer { color: rgba(212,168,83,0.7) !important; }
+.hevy-rest-active { 
+  color: #4ade80 !important;
+  text-shadow: 0 0 12px rgba(74,222,128,0.5) !important;
+  animation: restPulse 1s ease-in-out infinite !important;
+}
+@keyframes restPulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ── PR BOARD ENTRIES ── */
+#pr-board-stats > div {
+  background: rgba(12,10,18,0.9) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 14px !important;
+  padding: 12px 16px !important;
+  transition: all 0.2s !important;
+}
+#pr-board-stats > div:hover {
+  border-color: rgba(212,168,83,0.15) !important;
+  background: rgba(16,13,24,0.95) !important;
+}
+
+/* ── MUSCLE HEATMAP WRAPPER ── */
+#muscle-heatmap-wrap {
+  background: rgba(8,7,12,0.5) !important;
+  border-radius: 14px !important;
+  padding: 12px !important;
+}
+
+/* ── ONLINE STATUS DOT ── */
+#online-status {
+  background: #4ade80 !important;
+  box-shadow: 0 0 8px rgba(74,222,128,0.8), 0 0 3px rgba(74,222,128,1) !important;
+  animation: onlinePulse 3s ease-in-out infinite !important;
+}
+@keyframes onlinePulse {
+  0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.8); }
+  50% { box-shadow: 0 0 14px rgba(74,222,128,1), 0 0 5px rgba(74,222,128,0.5); }
+}
+
+/* ── CLOCK ── */
+#top-bar-clock {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: rgba(255,255,255,0.3) !important;
+  letter-spacing: 0.06em !important;
+  font-family: 'DM Mono', monospace !important;
+}
+
+/* ── BOTTOM SHEETS (modals): second-tier refinement ── */
+.modal-overlay > div:not(#activity-panel) {
+  background: linear-gradient(180deg, rgba(14,12,22,0.99), rgba(9,8,16,0.99)) !important;
+}
+.modal-overlay {
+  background: rgba(0,0,0,0.88) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+/* ── PROGRESS BARS (Macros) ── */
+[style*="border-radius:8px"][style*="height:8px"],
+[style*="border-radius:4px"][style*="height:4px"] {
+  background: rgba(255,255,255,0.06) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* ── FOOD LOG ENTRIES ── */
+.list-item, [class*="meal-item"], [class*="food-item"] {
+  background: rgba(12,10,18,0.9) !important;
+  border-left: 3px solid rgba(212,168,83,0.3) !important;
+  border-radius: 14px !important;
+  transition: all 0.2s !important;
+}
+
+/* ── NUMBER DISPLAY (calories / macros) ── */
+[id*="cal-num"], [id*="total-cal"], [id*="macro-num"] {
+  font-family: 'Syne', sans-serif !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ── FLOATING ACTION AREA ── */
+.hevy-add-exercise-bar {
+  background: rgba(3,2,8,0.98) !important;
+  border-top: 1px solid rgba(212,168,83,0.1) !important;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.6) !important;
+  backdrop-filter: blur(24px) !important;
+}
+.hevy-add-exercise-btn {
+  background: linear-gradient(135deg, #f0c060, #c9922e) !important;
+  color: #000 !important;
+  font-weight: 900 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.01em !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 24px rgba(212,168,83,0.35), inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+  width: calc(100% - 32px) !important;
+  padding: 15px !important;
+}
+.hevy-add-exercise-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 32px rgba(212,168,83,0.45) !important;
+}
+
+/* ── SEARCH INPUT (exercise sheet) ── */
+[type="search"], [placeholder*="Search"], [placeholder*="search"] {
+  background: rgba(10,8,18,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.09) !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  transition: all 0.25s !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+[type="search"]:focus, [placeholder*="Search"]:focus {
+  border-color: rgba(212,168,83,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.1), inset 0 2px 6px rgba(0,0,0,0.3) !important;
+}
+
+/* ── EXERCISE LIST IN SHEET ── */
+[onclick*="addExercise"] {
+  background: rgba(10,8,16,0.85) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+  transition: all 0.2s !important;
+}
+[onclick*="addExercise"]:hover {
+  background: rgba(18,15,28,0.95) !important;
+  padding-left: 24px !important;
+}
+
+/* ── OFFLINE BAR ── */
+#offline-bar {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
+  font-family: 'DM Mono', monospace !important;
+  letter-spacing: 0.06em !important;
+  font-size: 11px !important;
+}
+
+/* ── SELECTION HIGHLIGHT ── */
+::selection {
+  background: rgba(212,168,83,0.35) !important;
+  color: #fff !important;
+}
+
+/* ── INPUT PLACEHOLDER STYLE ── */
+::placeholder { color: rgba(255,255,255,0.22) !important; }
+::-webkit-input-placeholder { color: rgba(255,255,255,0.22) !important; }
+
+/* ── FOCUS RING GLOBAL ── */
+:focus-visible {
+  outline: 2px solid rgba(212,168,83,0.5) !important;
+  outline-offset: 2px !important;
+}
+
+/* ── STAGGER ENTRANCE ANIMATIONS ── */
+.card-animate:nth-child(1) { animation-delay: 0.04s !important; }
+.card-animate:nth-child(2) { animation-delay: 0.09s !important; }
+.card-animate:nth-child(3) { animation-delay: 0.14s !important; }
+.card-animate:nth-child(4) { animation-delay: 0.19s !important; }
+.card-animate:nth-child(5) { animation-delay: 0.24s !important; }
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ── LB ROW SLIDE IN ── */
+@keyframes rowSlideIn {
+  from { opacity: 0; transform: translateX(-16px); filter: blur(2px); }
+  to { opacity: 1; transform: translateX(0); filter: blur(0); }
+}
+
+/* ── MEDALS / RANK GLOW ── */
+.rank-2 { text-shadow: 0 0 12px rgba(192,192,192,0.6) !important; }
+.rank-3 { text-shadow: 0 0 12px rgba(205,127,50,0.6) !important; }
+
+/* ── VOLUME BAR CHART BARS ── */
+#volume-bar-chart > div {
+  background: linear-gradient(180deg, rgba(212,168,83,0.9), rgba(168,120,48,0.7)) !important;
+  border-radius: 6px 6px 0 0 !important;
+  box-shadow: 0 0 10px rgba(212,168,83,0.2) !important;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1) !important;
+  min-width: 28px !important;
+}
+#volume-bar-chart > div:hover {
+  background: linear-gradient(180deg, #f0c060, #c9922e) !important;
+  box-shadow: 0 0 20px rgba(212,168,83,0.4) !important;
+}
+
+/* ── BMI DISPLAY ── */
+#ps-bmi {
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* ── TOGGLE SWITCH (remember me) ── */
+#rm-track { 
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 14px !important;
+}
+#toggle-knob {
+  background: rgba(255,255,255,0.4) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4) !important;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+
+/* ── LOGIN ERROR BLOCK ── */
+#login-err {
+  background: rgba(248,113,113,0.08) !important;
+  border: 1px solid rgba(248,113,113,0.25) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ── VIDEO MODAL BACKGROUNDS ── */
+#no-video-placeholder, #video-loading {
+  background: rgba(6,5,12,0.98) !important;
+}
+#exercise-video {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* ── PLATE CHIP ── */
+.plate-chip {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  font-family: 'DM Mono', monospace !important;
+}
+
+/* ── PLAN RENEWAL / PAYMENT HERO ── */
+[style*="gradient-text"], .gradient-text {
+  background: linear-gradient(135deg, #fde8a8 0%, #f0c060 35%, #d4a853 65%, #fde8a8 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  background-size: 200% auto !important;
+  animation: gradientShift 4s ease-in-out infinite !important;
+}
+@keyframes gradientShift {
+  0%,100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* ── BODY SCROLLBAR: ultra-refined ── */
+body::-webkit-scrollbar { width: 0 !important; }
+#app-shell::-webkit-scrollbar { display: none !important; }
+.tab-section::-webkit-scrollbar { width: 2px !important; }
+
+/* ── GLASS OVERLAY CARDS (misc inline divs with bg:#141414) ── */
+[style*="background:#141414"] {
+  background: rgba(14,12,22,0.97) !important;
+  border-radius: 12px !important;
+}
+[style*="background:#0e0e0e"]:not(#ambient):not(body) {
+  background: rgba(12,10,18,0.96) !important;
+}
+
+/* ── MOTIVE POP (set completion floater) ── */
+.motive-pop {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  color: #4ade80 !important;
+  text-shadow: 0 0 20px rgba(74,222,128,0.7) !important;
+}
+
+/* ── FIRE WIGGLE: more dramatic ── */
+.fire-wiggle {
+  animation: fireWigglePro 0.6s ease-in-out infinite !important;
+  display: inline-block !important;
+}
+@keyframes fireWigglePro {
+  0%,100% { transform: rotate(-5deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.1); }
+}
+
+/* ── GOLD PULSE: smoother ── */
+.gold-pulse {
+  animation: goldPulsePro 2.5s ease-in-out infinite !important;
+}
+@keyframes goldPulsePro {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,168,83,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(212,168,83,0); }
+}
+
+/* ── CONFETTI BURST ── */
+@keyframes confettiBurst {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; filter: brightness(1.5); }
+  100% { transform: scale(2) rotate(720deg); opacity: 0; }
+}
+
+/* ── EXPIRY BANNERS: deeper ── */
+.expiry-warn { background: rgba(248,113,113,0.07) !important; border: 1px solid rgba(248,113,113,0.22) !important; border-radius: 16px !important; }
+.expiry-ok   { background: rgba(52,211,153,0.07) !important; border: 1px solid rgba(52,211,153,0.2) !important; border-radius: 16px !important; }
+.expiry-soon { background: rgba(251,191,36,0.07) !important; border: 1px solid rgba(251,191,36,0.22) !important; border-radius: 16px !important; }
+
+/* ── STEP RING GLOW ── */
+#steps-ring { filter: drop-shadow(0 0 8px rgba(33,150,243,0.7)) !important; }
+#steps-count {
+  font-weight: 200 !important;
+  letter-spacing: -4px !important;
+  text-shadow: 0 0 30px rgba(255,255,255,0.1) !important;
+}
+#steps-pct {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  color: #64b5f6 !important;
+  text-shadow: 0 0 12px rgba(100,181,246,0.5) !important;
+}
+
+/* ── ACTIVITY PANEL BELL BADGE ── */
+#notif-badge {
+  background: #f87171 !important;
+  box-shadow: 0 0 8px rgba(248,113,113,0.7) !important;
+  border: 2px solid rgba(3,2,8,0.9) !important;
+}
+
+/* ── HEVY SETS HEADER ── */
+.hevy-sets-header {
+  color: rgba(255,255,255,0.28) !important;
+  letter-spacing: 0.1em !important;
+  font-size: 9.5px !important;
+}
+
+/* ── HEVY SET ROW HOVER ── */
+.hevy-set-row:hover { background: rgba(255,255,255,0.025) !important; border-radius: 10px !important; }
+.hevy-set-row.set-completed { background: rgba(74,222,128,0.07) !important; border-radius: 10px !important; }
+
+/* ── HEVY SET PREV ── */
+.hevy-set-prev {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 10px !important;
+  color: rgba(255,255,255,0.25) !important;
+}
+
+/* ── CHAT HEADER ── */
+.chat-header {
+  background: rgba(7,6,14,0.98) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(20px) !important;
+}
+.chat-header-avatar {
+  box-shadow: 0 0 16px rgba(212,168,83,0.2) !important;
+  border: 1.5px solid rgba(212,168,83,0.3) !important;
+}
+.chat-online-dot {
+  background: #4ade80 !important;
+  box-shadow: 0 0 8px rgba(74,222,128,0.8) !important;
+  border-color: rgba(7,6,14,0.98) !important;
+}
+#chat-scroll { background: rgba(3,2,8,0.99) !important; }
+.chat-bar {
+  background: rgba(7,6,14,0.98) !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(20px) !important;
+}
+.chat-bar textarea {
+  background: rgba(14,12,22,0.95) !important;
+  border: 1.5px solid rgba(255,255,255,0.09) !important;
+  border-radius: 18px !important;
+  transition: border-color 0.2s !important;
+}
+.chat-bar textarea:focus { border-color: rgba(212,168,83,0.5) !important; }
+
+/* ── CHAT DATE SEPARATOR ── */
+.chat-date-sep {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 20px !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 9px !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* ── BUBBLE AVATAR ── */
+.b-avatar {
+  box-shadow: 0 0 10px rgba(212,168,83,0.15) !important;
+}
+
+/* ── SECTION TITLE (home, meals etc.) ── */
+.section-title {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.14em !important;
+  color: rgba(255,255,255,0.32) !important;
+}
+
+/* ── ANNOUNCEMENT LEFT BORDER ── */
+.ann-info   { border-left: 2px solid #f0c060 !important; }
+.ann-warning { border-left: 2px solid #f87171 !important; }
+.ann-promo  { border-left: 2px solid #f0c060 !important; }
+
+/* ── WORKOUT TAB UNDERLINES ── */
+.wtab-btn {
+  position: relative !important;
+  padding: 12px 16px !important;
+  font-size: 12px !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.32) !important;
+  transition: color 0.2s !important;
+}
+.wtab-btn.active { color: #f0c060 !important; }
+.wtab-btn.active::after {
+  background: linear-gradient(90deg, transparent, #f0c060, transparent) !important;
+  height: 2px !important;
+  transform: translateX(-50%) scaleX(1) !important;
+  box-shadow: 0 0 8px rgba(240,192,96,0.5) !important;
+}
+
+/* ── FINAL: smooth transitions everywhere ── */
+* {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+img { border-radius: 0; }
 </style>
   <script>
     if ('serviceWorker' in navigator) {
@@ -2018,6 +3723,29 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
 <body>
 <div id="ambient"><div class="amb-orb3"></div></div>
 <div id="notif-container"></div>
+
+  <!-- ACTIVITY NOTIFICATION PANEL -->
+  <div id="activity-panel-overlay" onclick="closeActivityPanel(event)">
+    <div id="activity-panel">
+      <div id="activity-panel-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <i class="fas fa-bell" style="color:#d4a853;font-size:15px;"></i>
+          <span style="font-size:15px;font-weight:800;color:#fff;font-family:'Syne',sans-serif;">Activity Log</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onclick="clearActivityLog()" style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:8px;transition:color 0.2s;">Clear all</button>
+          <button onclick="closeActivityPanel()" style="background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.5);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:13px;">✕</button>
+        </div>
+      </div>
+      <div id="activity-panel-list">
+        <div id="activity-empty" style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.2);">
+          <i class="fas fa-bell-slash" style="font-size:32px;margin-bottom:12px;display:block;opacity:0.3;"></i>
+          <div style="font-size:13px;font-weight:600;">No activity yet</div>
+          <div style="font-size:11px;margin-top:4px;opacity:0.7;">Your actions will appear here</div>
+        </div>
+      </div>
+    </div>
+  </div>
 <div id="offline-bar"><i class="fas fa-wifi-slash mr-2"></i>You're offline</div>
 
 <!-- LOGIN SCREEN -->
@@ -2033,7 +3761,7 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
       <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:8px;font-family:'Syne',sans-serif;">RFID Number or Email</label>
       <input id="login-input" type="text" autocomplete="off"
         style="width:100%;background:#141414;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;color:#fff;font-size:16px;font-weight:600;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"
-        placeholder="e.g. RMMQ1ES92"
+        placeholder="e.g. RMMQ1234"
         onkeydown="if(event.key==='Enter')doLogin()"
         onfocus="this.style.borderColor='#d4a853'" 
         onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
@@ -2045,14 +3773,14 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
     </div>
 
     <!-- Remember me -->
-    <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;text-align:left;">
-      <div style="position:relative;width:40px;height:22px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;text-align:left;" onclick="toggleRemember()">
+      <div style="position:relative;width:40px;height:22px;flex-shrink:0;pointer-events:none;">
         <input type="checkbox" id="remember-me" style="opacity:0;width:0;height:0;position:absolute;">
-        <div id="rm-track" style="position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:11px;border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;" onclick="toggleRemember()"></div>
+        <div id="rm-track" style="position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:11px;border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;"></div>
         <div id="toggle-knob" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.4);transition:transform 0.2s,background 0.2s;"></div>
       </div>
       <span style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:600;">Remember me</span>
-    </label>
+    </div>
 
     <!-- Sign in button -->
     <button onclick="doLogin()" id="login-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,#f0c060,#c9922e);border:none;border-radius:14px;color:#000;font-size:16px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;position:relative;overflow:hidden;">
@@ -2075,7 +3803,12 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
       </div>
     </div>
     <div class="flex items-center gap-2">
+      <div id="top-bar-clock" style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace;letter-spacing:0.04em;min-width:44px;text-align:right;"></div>
       <div id="online-status" style="width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 6px rgba(52,211,153,0.7);"></div>
+      <button id="notif-bell-btn" onclick="toggleActivityPanel()" title="Activity Log">
+        <i class="fas fa-bell"></i>
+        <span id="notif-badge"></span>
+      </button>
       <button onclick="refreshCurrentTab()" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:7px 10px;font-size:12px;cursor:pointer;transition:all 0.2s;"><i class="fas fa-rotate-right"></i></button>
       <button onclick="doLogout()" style="background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);color:rgba(248,113,113,0.8);border-radius:10px;padding:7px 10px;font-size:12px;cursor:pointer;transition:all 0.2s;"><i class="fas fa-sign-out-alt"></i></button>
     </div>
@@ -2272,32 +4005,126 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
         <!-- ── LAST WORKOUT ── -->
         <div id="home-last-workout" style="margin:0 16px 4px;"></div>
 
-        <!-- ── STEP COUNTER ── -->
+        <!-- ── STEP COUNTER (Pedometer Style) ── -->
         <div class="fb-section-header" style="margin-top:12px;">
           <span class="fb-section-title">Daily Steps</span>
-          <button onclick="requestStepPermission()" id="steps-enable-btn" class="fb-enable-btn">Enable</button>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="openStepGoalEditor()" style="background:rgba(212,168,83,0.12);border:1px solid rgba(212,168,83,0.25);color:#d4a853;font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;cursor:pointer;letter-spacing:0.02em;">Edit Goal</button>
+            <button onclick="requestStepPermission()" id="steps-enable-btn" class="fb-enable-btn">Enable</button>
+          </div>
         </div>
-        <div class="fb-steps-card">
-          <div style="flex:1;">
-            <div style="display:flex;align-items:flex-end;gap:4px;">
-              <div id="steps-count" style="font-size:38px;font-weight:900;color:#fff;line-height:1;font-family:'Syne',sans-serif;">—</div>
-              <div style="font-size:13px;color:rgba(255,255,255,0.35);margin-bottom:5px;">/ <span id="steps-goal">10,000</span></div>
+
+        <!-- PEDOMETER CARD -->
+        <div style="margin:0 16px 14px;background:linear-gradient(145deg,#111009,#0c0b0a);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;">
+
+          <!-- Big Ring Section -->
+          <div style="display:flex;flex-direction:column;align-items:center;padding:24px 20px 16px;position:relative;">
+
+            <!-- Ring -->
+            <div style="position:relative;width:190px;height:190px;">
+              <svg width="190" height="190" viewBox="0 0 190 190" style="transform:rotate(-90deg);">
+                <defs>
+                  <linearGradient id="stepGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#64b5f6"/>
+                    <stop offset="100%" stop-color="#1565c0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Track -->
+                <circle cx="95" cy="95" r="80" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="14"/>
+                <!-- Progress arc -->
+                <circle id="steps-ring" cx="95" cy="95" r="80" fill="none"
+                  stroke="url(#stepGrad2)" stroke-width="14"
+                  stroke-dasharray="0 502" stroke-linecap="round"
+                  style="transition:stroke-dasharray 0.9s cubic-bezier(0.16,1,0.3,1);filter:drop-shadow(0 0 6px rgba(33,150,243,0.5));"/>
+              </svg>
+
+              <!-- Center content -->
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+                <div id="steps-pct" style="font-size:15px;font-weight:800;color:#64b5f6;letter-spacing:0.02em;">0%</div>
+                <div id="steps-count" style="font-size:42px;font-weight:300;color:#ffffff;line-height:1;font-family:'Syne',sans-serif;letter-spacing:-1px;">0</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px;">Goal: <span id="steps-goal" style="color:rgba(255,255,255,0.55);">10,000</span></div>
+              </div>
             </div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:3px;">steps today</div>
-            <div style="background:rgba(255,255,255,0.05);border-radius:6px;height:6px;overflow:hidden;margin-top:14px;">
-              <div id="steps-bar" style="height:100%;background:linear-gradient(90deg,#4ade80,#22d3ee);border-radius:6px;width:0%;transition:width 0.6s;"></div>
-            </div>
-            <div id="steps-disabled" style="font-size:11px;color:rgba(255,255,255,0.22);margin-top:8px;">Tap Enable to track steps</div>
+
+            <!-- Enable status -->
+            <div id="steps-disabled" style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:10px;text-align:center;letter-spacing:0.02em;">Tap Enable to start tracking</div>
           </div>
-          <div style="position:relative;width:64px;height:64px;flex-shrink:0;">
-            <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
-              <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="5"/>
-              <circle id="steps-ring" cx="32" cy="32" r="26" fill="none" stroke="#4ade80" stroke-width="5" stroke-dasharray="0 163" stroke-linecap="round" style="transition:stroke-dasharray 0.6s;"/>
-            </svg>
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-              <span id="steps-pct" style="font-size:10px;font-weight:800;color:#4ade80;">0%</span>
+
+          <!-- Divider -->
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 16px;"></div>
+
+          <!-- 4-stat row like pedometer app -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:16px 8px;">
+
+            <!-- Distance -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px;">
+              <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(33,150,243,0.4);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-location-dot" style="color:#64b5f6;font-size:14px;"></i>
+              </div>
+              <div id="steps-km" style="font-size:17px;font-weight:800;color:#ffffff;line-height:1;">—</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">km</div>
+            </div>
+
+            <!-- Calories -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px;border-left:1px solid rgba(255,255,255,0.06);">
+              <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(33,150,243,0.4);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-fire" style="color:#64b5f6;font-size:14px;"></i>
+              </div>
+              <div id="steps-cal" style="font-size:17px;font-weight:800;color:#ffffff;line-height:1;">—</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">kcal</div>
+            </div>
+
+            <!-- Speed -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px;border-left:1px solid rgba(255,255,255,0.06);">
+              <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(33,150,243,0.4);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-gauge-high" style="color:#64b5f6;font-size:14px;"></i>
+              </div>
+              <div id="steps-speed" style="font-size:17px;font-weight:800;color:#ffffff;line-height:1;">—</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">km/h</div>
+            </div>
+
+            <!-- Time -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px;border-left:1px solid rgba(255,255,255,0.06);">
+              <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(33,150,243,0.4);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-hourglass-half" style="color:#64b5f6;font-size:14px;"></i>
+              </div>
+              <div id="steps-mins" style="font-size:17px;font-weight:800;color:#ffffff;line-height:1;">—</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">h:m</div>
             </div>
           </div>
+
+          <!-- Divider -->
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 16px;"></div>
+
+          <!-- Hourly bar chart -->
+          <div style="padding:14px 16px 6px;">
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-weight:700;">Hourly Activity</div>
+            <div style="position:relative;height:72px;">
+              <!-- Y labels -->
+              <div style="position:absolute;left:0;top:0;bottom:18px;display:flex;flex-direction:column;justify-content:space-between;padding-bottom:2px;">
+                <span id="steps-chart-max" style="font-size:9px;color:rgba(255,255,255,0.25);">2k</span>
+                <span style="font-size:9px;color:rgba(255,255,255,0.25);">1k</span>
+                <span style="font-size:9px;color:rgba(255,255,255,0.25);">0</span>
+              </div>
+              <!-- Bars -->
+              <div style="margin-left:20px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;">
+                <div id="steps-hourly-bars" style="display:flex;align-items:flex-end;gap:2px;height:54px;">
+                  <!-- 24 bars generated by JS -->
+                </div>
+                <!-- X axis labels -->
+                <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 1px;">
+                  <span style="font-size:8px;color:rgba(255,255,255,0.25);">0</span>
+                  <span style="font-size:8px;color:rgba(255,255,255,0.25);">6</span>
+                  <span style="font-size:8px;color:rgba(255,255,255,0.25);">12</span>
+                  <span style="font-size:8px;color:rgba(255,255,255,0.25);">18</span>
+                  <span style="font-size:8px;color:rgba(255,255,255,0.25);">24</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- hidden bar element for compat -->
+          <div id="steps-bar" style="display:none;"></div>
         </div>
 
         <!-- ── ARTICLES & TIPS (Reminders) ── -->
@@ -2434,12 +4261,14 @@ body.admob-active #main-content { padding-bottom: calc(130px + env(safe-area-ins
           </div>
           <button onclick="shiftMealsDay(1)" id="meals-next-btn" style="background:rgba(255,255,255,0.06);border:none;color:rgba(255,255,255,0.6);font-size:15px;cursor:pointer;padding:7px 13px;border-radius:10px;"><i class="fas fa-chevron-right"></i></button>
         </div>
-        <!-- Sub-tabs + Add button -->
-        <div style="display:flex;padding:0 16px;gap:0;align-items:center;">
-          <button id="mtab-diary"   onclick="switchMealsTab('diary')"   style="flex:1;padding:9px 4px;font-size:13px;font-weight:700;background:none;border:none;color:#d4a853;border-bottom:2px solid #d4a853;cursor:pointer;font-family:'DM Sans',sans-serif;">Diary</button>
-          <button id="mtab-macros"  onclick="switchMealsTab('macros')"  style="flex:1;padding:9px 4px;font-size:13px;font-weight:700;background:none;border:none;color:rgba(255,255,255,0.35);border-bottom:2px solid transparent;cursor:pointer;font-family:'DM Sans',sans-serif;">Macros</button>
-          <button id="mtab-history" onclick="switchMealsTab('history')" style="flex:1;padding:9px 4px;font-size:13px;font-weight:700;background:none;border:none;color:rgba(255,255,255,0.35);border-bottom:2px solid transparent;cursor:pointer;font-family:'DM Sans',sans-serif;">History</button>
-          <button id="mtab-water"   onclick="switchMealsTab('water')"   style="flex:1;padding:9px 4px;font-size:13px;font-weight:700;background:none;border:none;color:rgba(255,255,255,0.35);border-bottom:2px solid transparent;cursor:pointer;font-family:'DM Sans',sans-serif;">Water</button>
+        <!-- Sub-tabs pill switcher -->
+        <div style="padding:6px 16px 10px;">
+          <div style="display:flex;background:rgba(255,255,255,0.05);border-radius:14px;padding:3px;gap:2px;">
+            <button id="mtab-diary"   onclick="switchMealsTab('diary')"   class="meals-pill-tab meals-pill-active">🍽 Diary</button>
+            <button id="mtab-macros"  onclick="switchMealsTab('macros')"  class="meals-pill-tab">📊 Macros</button>
+            <button id="mtab-history" onclick="switchMealsTab('history')" class="meals-pill-tab">📅 History</button>
+            <button id="mtab-water"   onclick="switchMealsTab('water')"   class="meals-pill-tab">💧 Water</button>
+          </div>
         </div>
       </div>
 
@@ -4080,9 +5909,11 @@ function startWorkout() {
   }
   // If not started from a routine, clear the routine tracking
   if (window._activeRoutineIndex === undefined) window._activeRoutineIndex = null;
+  saveWorkoutDraft();
   startWorkoutTimer();
   renderExerciseList();
   switchWorkoutView(true);
+  history.pushState({ tab: 'workouts', workoutActive: true }, '', '');
 }
 
 function switchWorkoutView(showActive) {
@@ -4137,6 +5968,7 @@ function discardWorkout() {
   if (activeWorkout.timerInterval) clearInterval(activeWorkout.timerInterval);
   if (restTimerInterval) clearInterval(restTimerInterval);
   activeWorkout = { startTime: null, exercises: [], timerInterval: null };
+  clearWorkoutDraft();
   switchWorkoutView(false);
 }
 
@@ -4413,12 +6245,17 @@ function linkSuperset(idxA, idxB) {
 
 function addSetToExercise(exIndex) {
   activeWorkout.exercises[exIndex].sets.push({ kg: '', reps: '', done: false });
+  saveWorkoutDraft();
   renderExerciseList();
 }
 
+let _draftSaveTimer = null;
 function updateSet(exIndex, setIndex, field, value) {
   activeWorkout.exercises[exIndex].sets[setIndex][field] = value;
   updateWorkoutStats();
+  // Debounce draft save to avoid saving on every keystroke
+  clearTimeout(_draftSaveTimer);
+  _draftSaveTimer = setTimeout(saveWorkoutDraft, 800);
 }
 
 function toggleSetDone(exIndex, setIndex) {
@@ -4463,6 +6300,7 @@ function toggleSetDone(exIndex, setIndex) {
   }
 
   updateWorkoutStats();
+  saveWorkoutDraft();
 }
 
 function removeExercise(exIndex) {
@@ -4484,6 +6322,7 @@ function removeExercise(exIndex) {
     activeWorkout.exercises.splice(exIndex, 1);
   }
   renderExerciseList();
+  saveWorkoutDraft();
 }
 
 function updateWorkoutStats() {
@@ -4928,6 +6767,7 @@ function addExerciseToWorkout(name) {
     sets: [{ kg: '', reps: '', done: false }],
     supersetGroup: supersetMode ? currentSupersetGroup : null
   });
+  saveWorkoutDraft();
   renderExerciseList();
   hideAddExerciseSheet();
 }
@@ -5090,6 +6930,7 @@ async function saveEditedWorkout() {
       closeWorkoutEditModal();
       document.getElementById('workout-summary-modal').classList.add('open');
 
+      clearWorkoutDraft();
       if (activeWorkout.timerInterval) clearInterval(activeWorkout.timerInterval);
       if (restTimerInterval) clearInterval(restTimerInterval);
       switchWorkoutView(false);
@@ -5524,6 +7365,8 @@ async function bootApp() {
   await loadMemberProgram();
   await loadPRs();
   renderHomeTab();
+  // Restore any unsaved workout draft
+  restoreWorkoutDraft();
   // Show FAB on home tab (default)
 }
 
@@ -6555,6 +8398,99 @@ async function renderAllAnnouncements() {
 }
 
 // ========== NOTIFICATIONS ==========
+// ========== ACTIVITY LOG SYSTEM ==========
+const _activityLog = [];
+let _unreadCount = 0;
+
+function _formatTime(d) {
+  const now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return d.toLocaleDateString();
+}
+
+function _typeIcon(type) {
+  const icons = { success:'fa-check-circle', error:'fa-exclamation-circle', warning:'fa-exclamation-triangle', info:'fa-info-circle', gold:'fa-star', steps:'fa-shoe-prints' };
+  return icons[type] || 'fa-info-circle';
+}
+
+function logActivity(msg, type = 'info', extra = null) {
+  const entry = { msg, type, extra, time: new Date(), id: Date.now() };
+  _activityLog.unshift(entry);
+  if (_activityLog.length > 60) _activityLog.pop();
+  _unreadCount++;
+  _renderActivityBadge();
+  _renderActivityList();
+}
+
+function _renderActivityBadge() {
+  const badge = document.getElementById('notif-badge');
+  const btn   = document.getElementById('notif-bell-btn');
+  if (!badge || !btn) return;
+  if (_unreadCount > 0) {
+    badge.textContent = _unreadCount > 99 ? '99+' : _unreadCount;
+    badge.style.display = 'flex';
+    btn.classList.add('has-new');
+  } else {
+    badge.style.display = 'none';
+    btn.classList.remove('has-new');
+  }
+}
+
+function _renderActivityList() {
+  const list = document.getElementById('activity-panel-list');
+  const empty = document.getElementById('activity-empty');
+  if (!list) return;
+  if (_activityLog.length === 0) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  // Remove old items (keep empty placeholder)
+  list.querySelectorAll('.activity-item').forEach(el => el.remove());
+  _activityLog.forEach((entry, i) => {
+    const div = document.createElement('div');
+    div.className = 'activity-item';
+    div.style.animationDelay = (i * 0.04) + 's';
+    const iconClass = entry.type === 'steps' ? 'steps' : entry.type;
+    div.innerHTML = `
+      <div class="activity-icon ${iconClass}"><i class="fas ${_typeIcon(entry.type)}"></i></div>
+      <div class="activity-body">
+        <div class="activity-msg">${entry.msg}</div>
+        ${entry.extra ? `<div class="activity-step-badge"><i class="fas fa-shoe-prints"></i>${entry.extra}</div>` : ''}
+        <div class="activity-time">${_formatTime(entry.time)}</div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function toggleActivityPanel() {
+  const overlay = document.getElementById('activity-panel-overlay');
+  if (!overlay) return;
+  if (overlay.classList.contains('open')) {
+    closeActivityPanel();
+  } else {
+    _unreadCount = 0;
+    _renderActivityBadge();
+    _renderActivityList();
+    overlay.classList.add('open');
+  }
+}
+
+function closeActivityPanel(e) {
+  if (e && e.target !== document.getElementById('activity-panel-overlay')) return;
+  document.getElementById('activity-panel-overlay')?.classList.remove('open');
+}
+
+function clearActivityLog() {
+  _activityLog.length = 0;
+  _unreadCount = 0;
+  _renderActivityBadge();
+  _renderActivityList();
+}
+
 function showNotif(msg, type = 'info') {
   const colors = {
     success: 'border-green-500 text-green-400 bg-green-500/10',
@@ -6571,6 +8507,8 @@ function showNotif(msg, type = 'info') {
   n.innerHTML = `<i class="fas ${icons[type]}"></i><span>${msg}</span>`;
   document.getElementById('notif-container').appendChild(n);
   setTimeout(() => n.remove(), 3000);
+  // Also log to activity panel
+  logActivity(msg, type);
 }
 
 // ========== TAB NAVIGATION ==========
@@ -6578,6 +8516,9 @@ const TAB_ORDER = ['home','workouts','meals','more'];
 let _lastTabIdx = 0;
 
 function showTab(tab) {
+  // Push history state so the browser back button can navigate between tabs
+  history.pushState({ tab }, '', '');
+
   // ── Nav pill ──
   const newIdx = TAB_ORDER.indexOf(tab);
   const dir = newIdx >= _lastTabIdx ? 'right' : 'left';
@@ -9523,6 +11464,7 @@ function openMealLogFood(defaultMeal) {
     </div>`;
 
   document.body.appendChild(overlay);
+  history.pushState({ tab: currentTab, modal: 'mealLog' }, '', '');
   mlogShowTab('frequent', overlay.querySelector('.mlog-tab-btn'));
   setTimeout(() => document.getElementById('mlog-name')?.focus(), 350);
 }
@@ -10662,31 +12604,86 @@ function updateNetCarbsFromToday() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// STEP COUNTER (Device Pedometer)
+// STEP COUNTER (Device Pedometer — accurate peak-detection)
 // ═══════════════════════════════════════════════════════════
-let _stepCount = 0;
-let _stepGoal = 10000;
-let _lastAccel = null;
-let _stepSensitivity = 1.2;
+let _stepCount      = 0;
+let _stepGoal       = 10000;
+
+// Peak-detection state
+let _accelBuffer    = [];          // rolling window of magnitudes
+const BUFFER_SIZE   = 4;           // samples to smooth over
+const STEP_THRESHOLD = 10.5;       // magnitude peak must exceed this (m/s²)
+const STEP_MIN_GAP  = 300;         // ms — minimum time between two steps
+let   _lastPeak     = false;
+let   _lastStepTs   = 0;
+
+// ── Live Step Notification ─────────────────────────────────
+let _liveStepNotif   = null;   // current Notification object
+let _notifStepCache  = -1;     // last count pushed to phone notif
+const NOTIF_STEP_INTERVAL = 10; // update phone notif every N steps
+
+function _requestNotifPermission(cb) {
+  if (!('Notification' in window)) { cb(false); return; }
+  if (Notification.permission === 'granted') { cb(true); return; }
+  if (Notification.permission === 'denied')  { cb(false); return; }
+  Notification.requestPermission().then(p => cb(p === 'granted'));
+}
+
+function _showLiveStepNotif() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const pct  = Math.min(100, Math.round(_stepCount / _stepGoal * 100));
+  const STRIDE_M  = 0.762;
+  const MET       = 3.5;
+  const WEIGHT_KG = parseFloat(localStorage.getItem('evolve_weight_kg') || '70');
+  const km        = (_stepCount * STRIDE_M / 1000).toFixed(2);
+  const kcal      = Math.round(MET * WEIGHT_KG * (_stepCount * STRIDE_M / 1000) / 3.5);
+
+  const title = `🚶 ${_stepCount.toLocaleString()} steps`;
+  const body  = `📍 ${km} km  🔥 ${kcal} kcal  ⏱ ${mins} min`;
+
+  // Close old notification and replace with updated one
+  if (_liveStepNotif) { try { _liveStepNotif.close(); } catch(e){} }
+  try {
+    _liveStepNotif = new Notification('Evolve Fitness — Step Tracker', {
+      body,
+      icon: 'icon-192.png',
+      tag:  'evolve-steps',      // same tag = replaces previous
+      renotify: false,
+      silent: true
+    });
+  } catch(e) { _liveStepNotif = null; }
+}
 
 function requestStepPermission() {
-  // DeviceMotion API
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    DeviceMotionEvent.requestPermission().then(state => {
-      if (state === 'granted') startStepCounter();
-      else showNotif('Permission denied for motion sensor', 'warning');
-    }).catch(() => showNotif('Could not access motion sensor', 'warning'));
-  } else if (window.DeviceMotionEvent) {
-    startStepCounter();
-  } else {
-    showNotif('Step counter not supported on this device', 'warning');
-  }
+  const startMotion = () => {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(state => {
+        if (state === 'granted') startStepCounter();
+        else showNotif('Permission denied for motion sensor', 'warning');
+      }).catch(() => showNotif('Could not access motion sensor', 'warning'));
+    } else if (window.DeviceMotionEvent) {
+      startStepCounter();
+    } else {
+      showNotif('Step counter not supported on this device', 'warning');
+    }
+  };
+
+  // Ask for notification permission first, then motion
+  _requestNotifPermission(granted => {
+    if (granted) {
+      showNotif('📳 Live step notifications enabled!', 'success');
+    } else {
+      showNotif('Steps will track — enable notifications for live updates', 'info');
+    }
+    startMotion();
+  });
 }
 
 function startStepCounter() {
-  const saved = localStorage.getItem('evolve_steps_' + new Date().toISOString().slice(0,10));
-  _stepCount = saved ? parseInt(saved) : 0;
-  _stepGoal  = parseInt(localStorage.getItem('evolve_step_goal') || '10000');
+  const today = new Date().toISOString().slice(0,10);
+  const saved = localStorage.getItem('evolve_steps_' + today);
+  _stepCount  = saved ? parseInt(saved) : 0;
+  _stepGoal   = parseInt(localStorage.getItem('evolve_step_goal') || '10000');
 
   const btn = document.getElementById('steps-enable-btn');
   if (btn) btn.style.display = 'none';
@@ -10694,33 +12691,210 @@ function startStepCounter() {
   if (dis) dis.textContent = 'Step tracking active 🟢';
 
   updateStepUI();
+  _showLiveStepNotif();   // show initial phone notification
   window.addEventListener('devicemotion', onDeviceMotion);
 }
 
 function onDeviceMotion(e) {
-  const a = e.acceleration || e.accelerationIncludingGravity;
+  const a = e.acceleration && (e.acceleration.x !== null) ? e.acceleration : e.accelerationIncludingGravity;
   if (!a) return;
+
   const magnitude = Math.sqrt((a.x||0)**2 + (a.y||0)**2 + (a.z||0)**2);
-  if (_lastAccel !== null) {
-    const diff = Math.abs(magnitude - _lastAccel);
-    if (diff > _stepSensitivity) {
+
+  _accelBuffer.push(magnitude);
+  if (_accelBuffer.length > BUFFER_SIZE) _accelBuffer.shift();
+  const smoothed = _accelBuffer.reduce((s, v) => s + v, 0) / _accelBuffer.length;
+
+  const now = Date.now();
+  const aboveThreshold = smoothed > STEP_THRESHOLD;
+
+  if (aboveThreshold && !_lastPeak) {
+    const gap = now - _lastStepTs;
+    if (gap >= STEP_MIN_GAP) {
       _stepCount++;
+      _lastStepTs = now;
       localStorage.setItem('evolve_steps_' + new Date().toISOString().slice(0,10), _stepCount);
+      _onStep_hourly();
       updateStepUI();
+      _checkStepMilestone(_stepCount);
+      // Update live phone notification every N steps
+      if (_stepCount - _notifStepCache >= NOTIF_STEP_INTERVAL) {
+        _notifStepCache = _stepCount;
+        _showLiveStepNotif();
+      }
     }
   }
-  _lastAccel = magnitude;
+  _lastPeak = aboveThreshold;
 }
 
 function updateStepUI() {
-  const pct = Math.min(100, (_stepCount / _stepGoal) * 100);
-  const el = id => document.getElementById(id);
-  if (el('steps-count'))  el('steps-count').textContent  = _stepCount.toLocaleString();
-  if (el('steps-goal'))   el('steps-goal').textContent   = _stepGoal.toLocaleString();
-  if (el('steps-pct'))    el('steps-pct').textContent    = Math.round(pct) + '%';
-  if (el('steps-bar'))    el('steps-bar').style.width    = pct + '%';
-  const circ = 2 * Math.PI * 22;
-  if (el('steps-ring'))   el('steps-ring').setAttribute('stroke-dasharray', `${(pct/100*circ).toFixed(1)} ${circ.toFixed(1)}`);
+  const pct  = Math.min(100, (_stepCount / _stepGoal) * 100);
+  const el   = id => document.getElementById(id);
+  const STRIDE_M  = 0.762;
+  const MET       = 3.5;
+  const WEIGHT_KG = parseFloat(localStorage.getItem('evolve_weight_kg') || '70');
+  const km        = (_stepCount * STRIDE_M / 1000);
+  const kcal      = Math.round(MET * WEIGHT_KG * km / 3.5);
+  const mins      = Math.round(_stepCount / 100);
+  const speedKmh  = mins > 0 ? (km / (mins / 60)) : 0;
+  const hh        = Math.floor(mins / 60);
+  const mm        = mins % 60;
+
+  // New ring — circumference of r=80 is 2π×80 ≈ 502
+  const CIRC = 502;
+  if (el('steps-ring'))
+    el('steps-ring').setAttribute('stroke-dasharray', `${(pct/100*CIRC).toFixed(1)} ${CIRC}`);
+
+  if (el('steps-count')) el('steps-count').textContent = _stepCount > 0 ? _stepCount.toLocaleString() : '0';
+  if (el('steps-goal'))  el('steps-goal').textContent  = _stepGoal.toLocaleString();
+  if (el('steps-pct'))   el('steps-pct').textContent   = Math.round(pct) + '%';
+
+  // 4-stat tiles
+  if (el('steps-km'))    el('steps-km').textContent    = _stepCount > 0 ? km.toFixed(2) : '—';
+  if (el('steps-cal'))   el('steps-cal').textContent   = _stepCount > 0 ? kcal : '—';
+  if (el('steps-speed')) el('steps-speed').textContent = _stepCount > 0 ? speedKmh.toFixed(1) : '—';
+  if (el('steps-mins'))  el('steps-mins').textContent  = _stepCount > 0 ? `${hh}:${mm.toString().padStart(2,'0')}` : '—';
+
+  // Hourly bar chart
+  _updateHourlyChart();
+}
+
+// Hourly step accumulator
+if (!window._hourlySteps) window._hourlySteps = new Array(24).fill(0);
+
+function _updateHourlyChart() {
+  const hour = new Date().getHours();
+  // Mark a step in current hour
+  if (_stepCount > 0) {
+    window._hourlySteps[hour] = Math.max(window._hourlySteps[hour],
+      Math.round(_stepCount / Math.max(1, hour + 1))); // rough distribution
+  }
+  _renderHourlyBars();
+}
+
+function _onStep_hourly() {
+  const hour = new Date().getHours();
+  window._hourlySteps[hour] = (window._hourlySteps[hour] || 0) + 1;
+  _renderHourlyBars();
+}
+
+function _renderHourlyBars() {
+  const container = document.getElementById('steps-hourly-bars');
+  if (!container) return;
+  const arr = window._hourlySteps;
+  const maxV = Math.max(...arr, 1);
+  const hour = new Date().getHours();
+
+  // Update Y axis label
+  const maxEl = document.getElementById('steps-chart-max');
+  if (maxEl) maxEl.textContent = maxV >= 1000 ? Math.round(maxV/1000)+'k' : maxV;
+
+  container.innerHTML = '';
+  for (let h = 0; h < 24; h++) {
+    const bar = document.createElement('div');
+    const heightPct = arr[h] > 0 ? Math.max(4, Math.round((arr[h] / maxV) * 100)) : 2;
+    bar.style.cssText = `flex:1;border-radius:3px 3px 0 0;transition:height 0.4s ease;` +
+      `height:${heightPct}%;` +
+      `background:${h === hour ? '#2196F3' : 'rgba(33,150,243,0.35)'};`;
+    container.appendChild(bar);
+  }
+}
+
+// ── Step Goal Editor ──────────────────────────────────────
+
+// Step milestone tracker
+const _firedMilestones = new Set();
+function _checkStepMilestone(count) {
+  const pct = count / _stepGoal;
+  // Every 1000 steps milestone
+  const k = Math.floor(count / 1000);
+  if (k > 0 && !_firedMilestones.has('k' + k)) {
+    _firedMilestones.add('k' + k);
+    const msg = `🚶 ${(k * 1000).toLocaleString()} steps reached!`;
+    const n = document.createElement('div');
+    n.className = 'notif notif-success';
+    n.innerHTML = `<i class="fas fa-shoe-prints"></i><span>${msg}</span>`;
+    document.getElementById('notif-container').appendChild(n);
+    setTimeout(() => n.remove(), 3500);
+    logActivity(msg, 'steps', `${count.toLocaleString()} / ${_stepGoal.toLocaleString()} steps`);
+  }
+  // Percentage milestones: 25%, 50%, 75%, 100%
+  [0.25, 0.5, 0.75, 1.0].forEach(p => {
+    const key = 'pct' + p;
+    if (pct >= p && !_firedMilestones.has(key)) {
+      _firedMilestones.add(key);
+      const label = p === 1.0 ? '🎉 Goal reached!' : `${p*100}% of daily goal`;
+      const emoji = p === 1.0 ? '🏆' : p >= 0.75 ? '🔥' : p >= 0.5 ? '💪' : '👟';
+      const n2 = document.createElement('div');
+      n2.className = 'notif notif-gold';
+      n2.innerHTML = `<i class="fas fa-star"></i><span>${emoji} ${label}</span>`;
+      document.getElementById('notif-container').appendChild(n2);
+      setTimeout(() => n2.remove(), 3500);
+      logActivity(`${emoji} ${label}`, 'gold', `${count.toLocaleString()} / ${_stepGoal.toLocaleString()} steps`);
+    }
+  });
+}
+function openStepGoalEditor() {
+  let modal = document.getElementById('step-goal-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'step-goal-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);';
+    modal.innerHTML = `
+      <div style="background:#141414;border:1px solid rgba(212,168,83,0.2);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;animation:tabFadeIn 0.3s cubic-bezier(0.16,1,0.3,1);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <div style="font-size:17px;font-weight:800;">Edit Step Goal</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:2px;">Set your daily step target</div>
+          </div>
+          <button onclick="document.getElementById('step-goal-modal').remove()" style="background:rgba(255,255,255,0.07);border:none;border-radius:50%;width:32px;height:32px;color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+          ${[5000,7500,10000,12000,15000,20000].map(g => `
+            <button onclick="selectStepGoalPreset(${g})" data-goal="${g}"
+              style="padding:12px 8px;border-radius:12px;border:1px solid ${g===_stepGoal?'#d4a853':'rgba(255,255,255,0.1)'};
+                     background:${g===_stepGoal?'rgba(212,168,83,0.12)':'rgba(255,255,255,0.04)'};
+                     color:${g===_stepGoal?'#d4a853':'rgba(255,255,255,0.6)'};font-size:13px;font-weight:700;cursor:pointer;
+                     transition:all 0.2s;" class="step-preset-btn">
+              ${g.toLocaleString()}
+            </button>`).join('')}
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Or enter custom goal</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input id="step-goal-custom" type="number" min="1000" max="100000" step="500"
+            value="${_stepGoal}"
+            style="flex:1;background:#0e0e0e;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;color:#fff;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;"
+            placeholder="e.g. 8000">
+          <span style="font-size:13px;color:rgba(255,255,255,0.35);white-space:nowrap;">steps / day</span>
+        </div>
+        <button onclick="saveStepGoal()" style="width:100%;margin-top:16px;padding:14px;background:linear-gradient(135deg,#f0c060,#c9922e);border:none;border-radius:14px;color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;">Save Goal</button>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  } else {
+    modal.style.display = 'flex';
+  }
+}
+
+function selectStepGoalPreset(goal) {
+  document.querySelectorAll('.step-preset-btn').forEach(btn => {
+    const isActive = parseInt(btn.dataset.goal) === goal;
+    btn.style.borderColor = isActive ? '#d4a853' : 'rgba(255,255,255,0.1)';
+    btn.style.background  = isActive ? 'rgba(212,168,83,0.12)' : 'rgba(255,255,255,0.04)';
+    btn.style.color       = isActive ? '#d4a853' : 'rgba(255,255,255,0.6)';
+  });
+  const inp = document.getElementById('step-goal-custom');
+  if (inp) inp.value = goal;
+}
+
+function saveStepGoal() {
+  const val = parseInt(document.getElementById('step-goal-custom')?.value) || 10000;
+  if (val < 500 || val > 100000) { showNotif('Please enter a goal between 500 and 100,000', 'warning'); return; }
+  _stepGoal = val;
+  localStorage.setItem('evolve_step_goal', val);
+  updateStepUI();
+  document.getElementById('step-goal-modal')?.remove();
+  showNotif('Step goal updated to ' + val.toLocaleString(), 'success');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -11617,4 +13791,554 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(initAdMob, 1200);
 });
 
+// ═══════════════════════════════════════════════════════════
+// V3 IMPROVEMENTS
+// ═══════════════════════════════════════════════════════════
+
+// ── Live clock ──────────────────────────────────────────────
+function _tickClock() {
+  const el = document.getElementById('top-bar-clock');
+  if (!el) return;
+  const now = new Date();
+  const h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = ((h % 12) || 12);
+  el.textContent = `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+setInterval(_tickClock, 1000);
+_tickClock();
+
+// ── Time-based greeting ─────────────────────────────────────
+function _updateGreetingSub() {
+  const sub = document.querySelector('.fb-greeting-sub');
+  if (!sub) return;
+  const h = new Date().getHours();
+  if (h < 12)      sub.textContent = '☀️ Good Morning. Let\'s crush today.';
+  else if (h < 17) sub.textContent = '💪 Good Afternoon. Keep pushing.';
+  else if (h < 21) sub.textContent = '🌙 Good Evening. Don\'t skip it.';
+  else              sub.textContent = '🌟 Night session? Let\'s go.';
+}
+setTimeout(_updateGreetingSub, 400);
+
+// ── Meals pill tab switcher override ───────────────────────
+// Override switchMealsTab to also update the pill styles
+const _origSwitchMealsTab = typeof switchMealsTab === 'function' ? switchMealsTab : null;
+window.switchMealsTab = function(view) {
+  if (_origSwitchMealsTab) _origSwitchMealsTab(view);
+  // Update pill active states
+  ['diary','macros','history','water'].forEach(v => {
+    const btn = document.getElementById('mtab-' + v);
+    if (!btn) return;
+    const isActive = v === view;
+    btn.classList.toggle('meals-pill-active', isActive);
+  });
+};
+
+// ── Calorie ring colour: green under goal, amber near, red over ──
+function _updateRingColour() {
+  const ring = document.getElementById('meals-ring-fill');
+  if (!ring) return;
+  const eaten = parseInt(document.getElementById('meals-cal-eaten')?.textContent || '0');
+  const goal  = parseInt(document.getElementById('meals-cal-goal-disp')?.textContent || '2200');
+  const pct   = goal > 0 ? eaten / goal : 0;
+  let colour = '#4ade80';
+  if (pct >= 1)        colour = '#f87171';
+  else if (pct >= 0.85) colour = '#fbbf24';
+  ring.style.stroke = colour;
+}
+// Poll every 2 seconds for ring colour update
+setInterval(_updateRingColour, 2000);
+
+// ── Animate stat numbers on home load ──────────────────────
+function _animateNumber(el, target, duration) {
+  if (!el || isNaN(target)) return;
+  const start = 0, startTime = performance.now();
+  function tick(now) {
+    const t = Math.min(1, (now - startTime) / duration);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(start + (target - start) * ease).toLocaleString();
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+// Watch for home tab becoming active and animate stats
+const _homeStatObserver = new MutationObserver(() => {
+  const home = document.getElementById('tab-home');
+  if (!home || !home.classList.contains('active')) return;
+  setTimeout(() => {
+    const visits = parseInt(document.getElementById('home-visits')?.textContent);
+    const streak = parseInt(document.getElementById('home-streak')?.textContent);
+    if (!isNaN(visits)) _animateNumber(document.getElementById('home-visits'), visits, 800);
+    if (!isNaN(streak)) _animateNumber(document.getElementById('home-streak'), streak, 1000);
+  }, 300);
+});
+_homeStatObserver.observe(document.body, { subtree: true, attributeFilter: ['class'] });
+
+// ══════════════════════════════════════════════════════════════
+// WORKOUT DRAFT PERSISTENCE
+// Auto-saves active workout to localStorage so it survives
+// page reloads / app resets. Restored at boot with a prompt.
+// ══════════════════════════════════════════════════════════════
+function saveWorkoutDraft() {
+  try {
+    if (!activeWorkout.startTime) return;
+    const draft = {
+      startTime: activeWorkout.startTime,
+      exercises: JSON.parse(JSON.stringify(activeWorkout.exercises)), // deep copy
+      routineIndex: (window._activeRoutineIndex !== undefined && window._activeRoutineIndex !== null)
+        ? window._activeRoutineIndex : null
+    };
+    localStorage.setItem('evolve_workout_draft', JSON.stringify(draft));
+  } catch(e) { console.warn('Could not save workout draft:', e); }
+}
+
+function clearWorkoutDraft() {
+  localStorage.removeItem('evolve_workout_draft');
+}
+
+function restoreWorkoutDraft() {
+  try {
+    const raw = localStorage.getItem('evolve_workout_draft');
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    if (!draft || !draft.startTime || !Array.isArray(draft.exercises) || !draft.exercises.length) {
+      clearWorkoutDraft();
+      return;
+    }
+    // Calculate how long ago the workout started
+    const elapsed = Math.floor((Date.now() - draft.startTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const timeStr = mins >= 60
+      ? `${Math.floor(mins / 60)}h ${mins % 60}m ago`
+      : mins > 0 ? `${mins}m ago` : 'just now';
+
+    const exNames = draft.exercises.slice(0, 3).map(e => e.name).join(', ');
+    const moreStr = draft.exercises.length > 3 ? ` +${draft.exercises.length - 3} more` : '';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay open';
+    overlay.style.cssText = 'z-index:999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);';
+    overlay.innerHTML = `
+      <div class="bottom-sheet" style="padding-bottom:calc(20px + env(safe-area-inset-bottom));">
+        <div class="sheet-handle"></div>
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="font-size:40px;margin-bottom:10px;">💪</div>
+          <div style="font-size:20px;font-weight:900;color:#f0c060;letter-spacing:-0.01em;">Resume Workout?</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:8px;line-height:1.55;">
+            You have an unfinished workout from <strong style="color:rgba(255,255,255,0.7);">${timeStr}</strong><br>
+            <span style="font-size:12px;color:rgba(212,168,83,0.7);">${exNames}${moreStr}</span>
+          </div>
+        </div>
+        <button id="draft-resume-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,#f0c060,#c9922e);border:none;border-radius:14px;color:#000;font-size:15px;font-weight:900;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i class="fas fa-play"></i> Resume Workout
+        </button>
+        <button id="draft-discard-btn" style="width:100%;padding:13px;background:transparent;border:1px solid rgba(248,113,113,0.3);border-radius:12px;color:#f87171;font-weight:700;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;">
+          <i class="fas fa-trash" style="margin-right:6px;"></i>Discard & Start Fresh
+        </button>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    document.getElementById('draft-resume-btn').addEventListener('click', () => {
+      overlay.remove();
+      // Restore workout state
+      activeWorkout.startTime = draft.startTime;
+      activeWorkout.exercises = draft.exercises;
+      if (draft.routineIndex !== null) window._activeRoutineIndex = draft.routineIndex;
+      // Navigate to workouts tab and show active view
+      showTab('workouts');
+      setTimeout(() => {
+        startWorkoutTimer();
+        renderExerciseList();
+        document.getElementById('workout-idle-view').classList.add('hidden');
+        document.getElementById('workout-active-view').classList.remove('hidden');
+        updateWorkoutStats();
+      }, 250);
+    });
+
+    document.getElementById('draft-discard-btn').addEventListener('click', () => {
+      overlay.remove();
+      clearWorkoutDraft();
+    });
+  } catch(e) {
+    console.warn('Could not restore workout draft:', e);
+    clearWorkoutDraft();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// BACK BUTTON NAVIGATION  (Android hardware key / browser ←)
+// Intercepts popstate so pressing back:
+//   1. Closes the topmost open modal/overlay
+//   2. Or closes the active workout options prompt
+//   3. Or navigates back to the previous tab
+//   4. Only exits the app when already on home with nothing open
+// ══════════════════════════════════════════════════════════════
+
+// Push an initial state so that the very first back press fires popstate
+// instead of immediately navigating away from the page.
+history.replaceState({ tab: 'home' }, '', '');
+
+window.addEventListener('popstate', function(e) {
+  // ── 1. Close any dynamically created modal overlays first ──
+  const dynModals = Array.from(document.querySelectorAll('.modal-overlay.open')).filter(el => !el.id);
+  if (dynModals.length) {
+    const top = dynModals[dynModals.length - 1];
+    top.remove();
+    // Re-push so back can close the next one too
+    history.pushState({ tab: currentTab }, '', '');
+    return;
+  }
+
+  // ── 2. Close any static modal overlays ──
+  const staticOpen = Array.from(document.querySelectorAll('.modal-overlay[id].open'));
+  if (staticOpen.length) {
+    const top = staticOpen[staticOpen.length - 1];
+    top.classList.remove('open');
+    history.pushState({ tab: currentTab }, '', '');
+    return;
+  }
+
+  // ── 3. If workout is active, show cancel options (don't exit) ──
+  const workoutActiveView = document.getElementById('workout-active-view');
+  if (workoutActiveView && !workoutActiveView.classList.contains('hidden')) {
+    showWorkoutOptions();
+    history.pushState({ tab: 'workouts', workoutActive: true }, '', '');
+    return;
+  }
+
+  // ── 4. Navigate back to previous tab or home ──
+  if (currentTab !== 'home') {
+    showTab('home');
+    // showTab already pushes state, no need to push again
+    return;
+  }
+
+  // ── 5. On home with nothing open — allow normal back (exit on Android) ──
+});
+
 </script>
+
+<style>
+/* ── Meals pill tabs ── */
+.meals-pill-tab {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  border-radius: 11px;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.22s cubic-bezier(0.16,1,0.3,1);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.meals-pill-tab.meals-pill-active {
+  background: rgba(212,168,83,0.15);
+  color: #f0c060;
+  box-shadow: inset 0 0 0 1px rgba(212,168,83,0.3);
+}
+
+/* ── Step counter card restyle ── */
+.fb-steps-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border-radius: 20px !important;
+  margin: 0 16px !important;
+  background: linear-gradient(145deg,#111110,#0d0d0c) !important;
+  border: 1px solid rgba(52,211,153,0.15) !important;
+  box-shadow: 0 0 30px rgba(52,211,153,0.06) !important;
+}
+
+/* ── Home hero stat cards ── */
+.fb-stat-card {
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+.fb-stat-card:active { transform: scale(0.96) !important; }
+
+/* ── Challenge banner ── */
+.fb-challenge-banner {
+  border-radius: 18px !important;
+  background: linear-gradient(135deg,#1a1108,#100d06) !important;
+  border: 1px solid rgba(212,168,83,0.2) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.fb-challenge-cta {
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  padding: 10px 16px !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* ── This week card ── */
+.fb-this-week-card {
+  border-radius: 18px !important;
+  background: linear-gradient(145deg,#111,#0c0c0c) !important;
+}
+.fb-week-num {
+  font-size: 28px !important;
+}
+.fb-week-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* ── Quote card ── */
+.fb-quote-card {
+  border-radius: 18px !important;
+  background: linear-gradient(135deg,rgba(212,168,83,0.07),rgba(212,168,83,0.03)) !important;
+  border: 1px solid rgba(212,168,83,0.14) !important;
+  transition: all 0.2s !important;
+}
+.fb-quote-card:active { transform: scale(0.98) !important; }
+
+/* ── Workout cards (horizontal scroll) ── */
+.fb-workout-card {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+.fb-workout-card:active { transform: scale(0.96) !important; }
+.fb-workout-card-badge {
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* ── Achievements card ── */
+.fb-achievements-card {
+  border-radius: 18px !important;
+  background: #0e0e0e !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+}
+
+/* ── Reminder card rows ── */
+.fb-reminder-row {
+  padding: 14px 16px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  transition: background 0.15s !important;
+}
+.fb-reminder-row:active { background: rgba(255,255,255,0.03) !important; }
+.fb-set-btn {
+  border-radius: 10px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 7px 12px !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── Day nav arrows ── */
+#meals-day-nav { font-size: 18px !important; font-weight: 900 !important; }
+[onclick="shiftMealsDay(-1)"], [onclick="shiftMealsDay(1)"] {
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  padding: 9px 16px !important;
+  transition: background 0.15s !important;
+}
+[onclick="shiftMealsDay(-1)"]:active,
+[onclick="shiftMealsDay(1)"]:active {
+  background: rgba(255,255,255,0.12) !important;
+}
+
+/* ── Meals Add Food button ── */
+#meals-fab {
+  border-radius: 18px !important;
+  font-size: 16px !important;
+  letter-spacing: 0.03em !important;
+  box-shadow: 0 6px 30px rgba(212,168,83,0.4) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+#meals-fab:active { transform: scale(0.97) !important; }
+
+/* ── Water progress bar ── */
+#water-bar {
+  background: linear-gradient(90deg, #38bdf8, #818cf8) !important;
+  box-shadow: 0 0 10px rgba(96,165,250,0.35) !important;
+  transition: width 0.6s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+/* ── Calorie ring ── */
+#meals-ring-fill {
+  filter: drop-shadow(0 0 6px rgba(74,222,128,0.4));
+  transition: stroke-dasharray 0.7s ease, stroke 0.5s !important;
+}
+
+/* ── More tab tiles ── */
+#tab-more .card {
+  border-radius: 18px !important;
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+}
+#tab-more .card:active { transform: scale(0.97) !important; }
+
+/* ── Profile hero ── */
+.profile-hero {
+  border-radius: 20px !important;
+  background: linear-gradient(145deg,#121110,#0c0b0a) !important;
+  border: 1px solid rgba(212,168,83,0.12) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* ── Announcement cards ── */
+.ann-card {
+  border-radius: 16px !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  overflow: hidden !important;
+}
+.ann-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(212,168,83,0.08) !important;
+}
+
+/* ── Plan badges ── */
+.plan-badge {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  padding: 3px 10px !important;
+  border-radius: 20px !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── Macro trend bars ── */
+#macro-trend-bars > div, #water-history-bars > div {
+  transition: height 0.5s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+/* ── Inner workout tabs ── */
+.inner-tab {
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 8px 14px !important;
+  transition: all 0.2s !important;
+}
+.inner-tab.active {
+  background: rgba(212,168,83,0.12) !important;
+  color: #f0c060 !important;
+}
+
+/* ── Floating label inputs ── */
+.fb-number-input, .fb-select {
+  border-radius: 12px !important;
+  border: 1.5px solid rgba(255,255,255,0.1) !important;
+  background: #0e0e0e !important;
+  color: #fff !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 700 !important;
+  padding: 10px 12px !important;
+  transition: border-color 0.2s !important;
+  width: 100% !important;
+}
+.fb-number-input:focus, .fb-select:focus {
+  border-color: rgba(212,168,83,0.5) !important;
+  outline: none !important;
+}
+
+/* ── Burn result ── */
+.fb-burn-result {
+  text-align: center;
+  padding: 16px;
+  background: rgba(248,113,113,0.06);
+  border-radius: 14px;
+  border: 1px solid rgba(248,113,113,0.15);
+}
+
+/* ── Profile setup banner ── */
+#profile-setup-banner {
+  transition: all 0.2s !important;
+}
+#profile-setup-banner:active { transform: scale(0.98) !important; }
+
+/* ── Steps disabled text ── */
+#steps-disabled { color: rgba(255,255,255,0.25) !important; }
+
+/* ── ACTIVITY NOTIFICATION PANEL ── */
+#activity-panel-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px); z-index: 700; display: none;
+  align-items: flex-start; justify-content: center;
+  animation: overlayIn 0.25s ease;
+}
+#activity-panel-overlay.open { display: flex; }
+#activity-panel {
+  position: absolute; top: 62px; right: 0; left: 50%;
+  transform: translateX(-50%);
+  max-width: 480px; width: 100%;
+  background: linear-gradient(180deg,#141414 0%,#0e0e0e 100%);
+  border: 1px solid rgba(212,168,83,0.14);
+  border-top: none;
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+  max-height: 72vh; overflow: hidden;
+  display: flex; flex-direction: column;
+  animation: activityPanelIn 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes activityPanelIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#activity-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+#activity-panel-list {
+  overflow-y: auto; flex: 1;
+  padding: 8px 0 12px;
+}
+#activity-panel-list::-webkit-scrollbar { width: 3px; }
+#activity-panel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+.activity-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+  animation: actItemIn 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes actItemIn { from{opacity:0;transform:translateX(12px);} to{opacity:1;transform:translateX(0);} }
+.activity-item:hover { background: rgba(255,255,255,0.03); }
+.activity-item:last-child { border-bottom: none; }
+.activity-icon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.activity-icon.success { background: rgba(74,222,128,0.12); color: #4ade80; }
+.activity-icon.gold    { background: rgba(212,168,83,0.12);  color: #d4a853; }
+.activity-icon.info    { background: rgba(96,165,250,0.12);  color: #60a5fa; }
+.activity-icon.warning { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+.activity-icon.error   { background: rgba(248,113,113,0.12); color: #f87171; }
+.activity-icon.steps   { background: rgba(52,211,153,0.12);  color: #34d399; }
+.activity-body { flex: 1; min-width: 0; }
+.activity-msg  { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88); line-height: 1.4; }
+.activity-time { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; font-weight: 500; }
+.activity-step-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.25);
+  color: #34d399; font-size: 10px; font-weight: 800; padding: 2px 8px;
+  border-radius: 20px; margin-top: 4px; letter-spacing: 0.03em;
+}
+
+/* Bell button */
+#notif-bell-btn {
+  position: relative; background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border); color: var(--text-muted);
+  border-radius: 10px; padding: 7px 10px; font-size: 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+#notif-bell-btn:hover { background: rgba(212,168,83,0.1); border-color: rgba(212,168,83,0.3); color: #d4a853; }
+#notif-bell-btn.has-new { color: #d4a853; border-color: rgba(212,168,83,0.35); background: rgba(212,168,83,0.08); }
+#notif-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: #f87171; color: #fff; font-size: 9px; font-weight: 800;
+  min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid #0a0a0a; display: none;
+}
+</style>
